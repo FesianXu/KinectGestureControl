@@ -1,0 +1,1 @@
+Kinect Gesture Control System(KGCS) Demo is used for the test and teaching, creating by FesianXu.
