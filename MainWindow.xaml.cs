@@ -99,16 +99,15 @@ namespace FesianXu.KinectGestureControl
         private int max_depth;
 
         // CNN initiation
-        private string lhand_pb_model_path = @"G:\电子工程\项目集合\Intel Cup Embedded System Design Contest\2018 Intel Cup ESDC\Projects\kinect_ctrl_main\kinect_gesture_control\kinect_gesture_control\Resources\models\lhand_cnn_model.pb";
-        private string rhand_pb_model_path = @"";
+        private string lhand_pb_model_path = @"../../Resources/models/lhand_cnn_models.pb";
+        private string rhand_pb_model_path = @"../../Resources/models/rhand_cnn_models.pb";
         private TFGraph lhand_global_graph;
         private TFGraph rhand_global_graph;
         private static TFSession lhand_global_sess;
         private static TFSession rhand_global_sess;
         private byte[] lhand_cnn_model; // cnn models raw byte streams
         private byte[] rhand_cnn_model;
-        private bool isLhandFirstToCNN = true;
-        private bool isRhandFirstToCNN = true;
+        private bool isFirstToCNN = true;
         private TFTensor lhand_tensor;
         private TFTensor rhand_tensor;
 
@@ -165,10 +164,14 @@ namespace FesianXu.KinectGestureControl
                     this.sensor.ElevationAngle = 6;
                     // load CNN models and initiation
                     lhand_global_graph = new TFGraph();
+                    rhand_global_graph = new TFGraph();
 
                     lhand_cnn_model = File.ReadAllBytes(lhand_pb_model_path);
+                    rhand_cnn_model = File.ReadAllBytes(rhand_pb_model_path);
                     lhand_global_graph.Import(lhand_cnn_model, "");
+                    rhand_global_graph.Import(rhand_cnn_model, "");
                     lhand_global_sess = new TFSession(lhand_global_graph);
+                    rhand_global_sess = new TFSession(rhand_global_graph);
                 }
                 catch (IOException)
                 {
@@ -193,6 +196,7 @@ namespace FesianXu.KinectGestureControl
             {
                 this.sensor.Stop();
                 lhand_global_sess.Dispose(true);
+                rhand_global_sess.Dispose(true);
             }
         }
 
@@ -245,7 +249,7 @@ namespace FesianXu.KinectGestureControl
             }
 
 
-            // open a drawing context and need to close it manully
+            // open a drawing context and need to close it manually
             DrawingContext dc = this.drawingGroup.Open();
             draw.addDrawingContext(ref dc);
             draw.getRenderAndClipBounds(RenderWidth, RenderHeight, ClipBoundsThickness);
@@ -270,7 +274,7 @@ namespace FesianXu.KinectGestureControl
                         byte[] lhand_p = byteprocess.mapColorImageROI(ref rawColorPixels, lroi);
                         byte[] rhand_p = byteprocess.mapColorImageROI(ref rawColorPixels, rroi);
                         BitmapSource lhand_bs = WriteableBitmap.Create(info.handWidth, info.handHeight,
-                            96, 96, PixelFormats.Bgr32, null, lhand_p, info.handWidth*4);
+                            96, 96, PixelFormats.Bgr32, null, lhand_p, info.handWidth * 4);
                         BitmapSource rhand_bs = WriteableBitmap.Create(info.handWidth, info.handHeight,
                              96, 96, PixelFormats.Bgr32, null, rhand_p, info.handWidth * 4);
 
@@ -278,22 +282,39 @@ namespace FesianXu.KinectGestureControl
                         byte[] lhand_c3 = byteprocess.removeAlphaChannel(ref lhand_p);
                         byte[] rhand_c3 = byteprocess.removeAlphaChannel(ref rhand_p);
                         var lhand_runner = lhand_global_sess.GetRunner();
+                        var rhand_runner = rhand_global_sess.GetRunner();
+
                         var lhand_tensor_g = new TFTensor(lhand_c3);
+                        var rhand_tensor_g = new TFTensor(rhand_c3);
+
                         var lhand_tensor_m = new TFTensor[] { lhand_tensor_g };
+                        var rhand_tensor_m = new TFTensor[] { rhand_tensor_g };
+
                         using (TFGraph local_graph = new TFGraph())
                         {
                             lhand_tensor = CreateTensorFromRawTensor(lhand_tensor_m, local_graph);
                         }
+                        using (TFGraph local_graph = new TFGraph())
+                        {
+                            rhand_tensor = CreateTensorFromRawTensor(rhand_tensor_m, local_graph);
+                        }
+
                         lhand_runner.AddInput(lhand_global_graph["input"][0], lhand_tensor).
                                    AddInput(lhand_global_graph["dropout"][0], 1.0f).
                                    Fetch(lhand_global_graph["softmax_output"][0]);
+                        rhand_runner.AddInput(rhand_global_graph["input"][0], rhand_tensor).
+                                   AddInput(rhand_global_graph["dropout"][0], 1.0f).
+                                   Fetch(rhand_global_graph["softmax_output"][0]);
+
                         TFTensor[] lhand_output;
-                        if (isLhandFirstToCNN)
+                        TFTensor[] rhand_output;
+
+                        if (isFirstToCNN)
                         {
                             this.sensor.AllFramesReady -= this.AllFrameReadyHandle;
                             lhand_output = lhand_runner.Run();
                             this.sensor.AllFramesReady += this.AllFrameReadyHandle;
-                            isLhandFirstToCNN = false;
+                            //isFirstToCNN = false;
                         }
                         else
                         {
@@ -308,6 +329,28 @@ namespace FesianXu.KinectGestureControl
                         //release and dispose
                         lhand_tensor.Dispose(true);
                         result.Dispose(true);
+
+                        if (isFirstToCNN)
+                        {
+                            this.sensor.AllFramesReady -= this.AllFrameReadyHandle;
+                            rhand_output = rhand_runner.Run();
+                            this.sensor.AllFramesReady += this.AllFrameReadyHandle;
+                            isFirstToCNN = false;
+                        }
+                        else
+                        {
+                            rhand_output = rhand_runner.Run();
+                        }
+                        result = rhand_output[0];
+                        p = ((float[][])result.GetValue(jagged: true))[0];
+                        if (p[0] == 1)
+                            RightHandStatusBox.Text = "Right Hand is palm";
+                        else
+                            RightHandStatusBox.Text = "Right Hand is fist";
+                        //release and dispose
+                        rhand_tensor.Dispose(true);
+                        result.Dispose(true);
+
 
                         left_hand_color_box.Source = lhand_bs;
                         right_hand_color_box.Source = rhand_bs;
@@ -324,7 +367,7 @@ namespace FesianXu.KinectGestureControl
             DateTime total_after = System.DateTime.Now;
             TimeSpan total_ts = total_after.Subtract(total_before);
             double total_tf = total_ts.TotalMilliseconds;
-            TotalCostTimeBox.Text = "TotalCostTime = "+total_tf.ToString()+" ms";
+            TotalCostTimeBox.Text = "TotalCostTime = " + total_tf.ToString() + " ms";
         }
 
 
