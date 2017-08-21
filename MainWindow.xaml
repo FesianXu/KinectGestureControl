@@ -103,13 +103,13 @@
         <ComboBox x:Name="backgroundInMainWindow" HorizontalAlignment="Left" Margin="833,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="120" SelectionChanged="backgroundInMainWindow_SelectionChanged"/>
 
         <!--params border-->
-        <TextBlock Name="angleBox"  HorizontalAlignment="Left" Margin="22,406,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Angle = ?" VerticalAlignment="Top" FontSize="15px"/>
-        <TextBlock Name="angleRateBox" HorizontalAlignment="Left" Margin="22,431,0,0" Grid.Row="1" TextWrapping="Wrap" Text="AngleRate = ?" VerticalAlignment="Top" FontSize="15px"/>
-        <TextBlock Name="LeftHandStatusBox" HorizontalAlignment="Left" Margin="22,456,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Left hand is ?" VerticalAlignment="Top" FontSize="15px"/>
-        <TextBlock Name="RightHandStatusBox" HorizontalAlignment="Left" Margin="22,481,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Right hand is ?" VerticalAlignment="Top" FontSize="15px"/>
+        <TextBlock Name="angleBox"  HorizontalAlignment="Left" Margin="22,406,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Angle = ?" VerticalAlignment="Top" FontSize="20px"/>
+        <TextBlock Name="angleRateBox" HorizontalAlignment="Left" Margin="22,437,0,0" Grid.Row="1" TextWrapping="Wrap" Text="AngleRate = ?" VerticalAlignment="Top" FontSize="20px"/>
+        <TextBlock Name="LeftHandStatusBox" HorizontalAlignment="Left" Margin="22,468,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Left hand is ?" VerticalAlignment="Top" FontSize="20px"/>
+        <TextBlock Name="RightHandStatusBox" HorizontalAlignment="Left" Margin="22,499,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Right hand is ?" VerticalAlignment="Top" FontSize="20px"/>
         
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="60" Grid.Row="2" VerticalAlignment="Top" Width="984" Grid.RowSpan="2"/>
-        <TextBlock x:Name="TotalCostTimeBox" HorizontalAlignment="Left" Margin="293,406,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Total Cost Time = ?" VerticalAlignment="Top" FontSize="15px"/>
+        <TextBlock x:Name="TotalCostTimeBox" HorizontalAlignment="Left" Margin="218,406,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Total Cost Time = ?" VerticalAlignment="Top" FontSize="20px"/>
 
 
 

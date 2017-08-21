@@ -98,13 +98,13 @@ namespace FesianXu.KinectGestureControl
         public byte[] removeAlphaChannel(ref byte[] bgra)
         {
             byte[] bgr = new byte[hands_size_width * hands_size_height * hands_channels];
-            for (int y = 0; y < img_size_height; y++)
+            for (int y = 0; y < hands_size_height; y++)
             {
-                for (int x = 0; x < img_size_width; x++)
+                for (int x = 0; x < hands_size_width; x++)
                 {
-                    for (int c = 0; c < img_channels; c++)
+                    for (int c = 0; c < hands_channels; c++)
                     {
-                        bgr[3 * (img_size_width * y + x) + c] = bgra[4 * (img_size_width * y + x) + c];
+                        bgr[3 * (hands_size_width * y + x) + c] = bgra[4 * (hands_size_width * y + x) + c];
                     }
                 }
             }

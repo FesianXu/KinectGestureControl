@@ -12,6 +12,7 @@ namespace FesianXu.KinectGestureControl
     using System.Windows.Media;
     using Microsoft.Kinect;
     using System.Windows.Media.Imaging;
+    using TensorFlow;
 
 
     /// <summary>
@@ -97,6 +98,21 @@ namespace FesianXu.KinectGestureControl
         private int min_depth;
         private int max_depth;
 
+        // CNN initiation
+        private string lhand_pb_model_path = @"G:\电子工程\项目集合\Intel Cup Embedded System Design Contest\2018 Intel Cup ESDC\Projects\kinect_ctrl_main\kinect_gesture_control\kinect_gesture_control\Resources\models\lhand_cnn_model.pb";
+        private string rhand_pb_model_path = @"";
+        private TFGraph lhand_global_graph;
+        private TFGraph rhand_global_graph;
+        private static TFSession lhand_global_sess;
+        private static TFSession rhand_global_sess;
+        private byte[] lhand_cnn_model; // cnn models raw byte streams
+        private byte[] rhand_cnn_model;
+        private bool isLhandFirstToCNN = true;
+        private bool isRhandFirstToCNN = true;
+        private TFTensor lhand_tensor;
+        private TFTensor rhand_tensor;
+
+
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -147,6 +163,12 @@ namespace FesianXu.KinectGestureControl
                 {
                     this.sensor.Start();
                     this.sensor.ElevationAngle = 6;
+                    // load CNN models and initiation
+                    lhand_global_graph = new TFGraph();
+
+                    lhand_cnn_model = File.ReadAllBytes(lhand_pb_model_path);
+                    lhand_global_graph.Import(lhand_cnn_model, "");
+                    lhand_global_sess = new TFSession(lhand_global_graph);
                 }
                 catch (IOException)
                 {
@@ -170,6 +192,7 @@ namespace FesianXu.KinectGestureControl
             if (null != this.sensor)
             {
                 this.sensor.Stop();
+                lhand_global_sess.Dispose(true);
             }
         }
 
@@ -251,8 +274,40 @@ namespace FesianXu.KinectGestureControl
                         BitmapSource rhand_bs = WriteableBitmap.Create(info.handWidth, info.handHeight,
                              96, 96, PixelFormats.Bgr32, null, rhand_p, info.handWidth * 4);
 
-
-
+                        ////////////// CNN for HandStatus recognition///////////////////////////////
+                        byte[] lhand_c3 = byteprocess.removeAlphaChannel(ref lhand_p);
+                        byte[] rhand_c3 = byteprocess.removeAlphaChannel(ref rhand_p);
+                        var lhand_runner = lhand_global_sess.GetRunner();
+                        var lhand_tensor_g = new TFTensor(lhand_c3);
+                        var lhand_tensor_m = new TFTensor[] { lhand_tensor_g };
+                        using (TFGraph local_graph = new TFGraph())
+                        {
+                            lhand_tensor = CreateTensorFromRawTensor(lhand_tensor_m, local_graph);
+                        }
+                        lhand_runner.AddInput(lhand_global_graph["input"][0], lhand_tensor).
+                                   AddInput(lhand_global_graph["dropout"][0], 1.0f).
+                                   Fetch(lhand_global_graph["softmax_output"][0]);
+                        TFTensor[] lhand_output;
+                        if (isLhandFirstToCNN)
+                        {
+                            this.sensor.AllFramesReady -= this.AllFrameReadyHandle;
+                            lhand_output = lhand_runner.Run();
+                            this.sensor.AllFramesReady += this.AllFrameReadyHandle;
+                            isLhandFirstToCNN = false;
+                        }
+                        else
+                        {
+                            lhand_output = lhand_runner.Run();
+                        }
+                        var result = lhand_output[0];
+                        var p = ((float[][])result.GetValue(jagged: true))[0];
+                        if (p[0] == 1)
+                            LeftHandStatusBox.Text = "Left Hand is palm";
+                        else
+                            LeftHandStatusBox.Text = "Left Hand is fist";
+                        //release and dispose
+                        lhand_tensor.Dispose(true);
+                        result.Dispose(true);
 
                         left_hand_color_box.Source = lhand_bs;
                         right_hand_color_box.Source = rhand_bs;
@@ -272,7 +327,32 @@ namespace FesianXu.KinectGestureControl
             TotalCostTimeBox.Text = "TotalCostTime = "+total_tf.ToString()+" ms";
         }
 
-        
+
+        private static TFTensor CreateTensorFromRawTensor(TFTensor[] tensor_m, TFGraph graph, bool isFromFile = false)
+        {
+
+            TFOutput input, output;
+            if (isFromFile)
+                input = graph.Placeholder(TFDataType.String);
+            else
+                input = graph.Placeholder(TFDataType.UInt8);
+            if (isFromFile)
+                output = graph.Cast(graph.DecodePng(contents: input, channels: 3), DstT: TFDataType.Float);
+            else
+                output = graph.Cast(x: input, DstT: TFDataType.Float);
+            output = graph.ExpandDims(input: output, dim: graph.Const(0));
+
+            using (var sess = new TFSession(graph))
+            {
+                var nor = sess.Run(
+                    inputs: new[] { input },
+                    inputValues: tensor_m,
+                    outputs: new[] { output }
+                    );
+                return nor[0];
+            }
+        }
+
 
         /// <summary>
         /// Handles the checking or unchecking of the seated mode combo box
