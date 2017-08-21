@@ -11,6 +11,7 @@ namespace FesianXu.KinectGestureControl
     using System.Windows.Media;
     using Microsoft.Kinect;
 
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -89,45 +90,7 @@ namespace FesianXu.KinectGestureControl
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Draws indicators to show which edges are clipping skeleton data
-        /// </summary>
-        /// <param name="skeleton">skeleton to draw clipping information for</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
-        private static void RenderClippedEdges(Skeleton skeleton, DrawingContext drawingContext)
-        {
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Bottom))
-            {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(0, RenderHeight - ClipBoundsThickness, RenderWidth, ClipBoundsThickness));
-            }
 
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Top))
-            {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(0, 0, RenderWidth, ClipBoundsThickness));
-            }
-
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Left))
-            {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(0, 0, ClipBoundsThickness, RenderHeight));
-            }
-
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Right))
-            {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(RenderWidth - ClipBoundsThickness, 0, ClipBoundsThickness, RenderHeight));
-            }
-        }
 
         /// <summary>
         /// Execute startup tasks
@@ -196,6 +159,9 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
+        //mainImageBoxDraw draw = new mainImageBoxDraw();
+        Skeleton skeltmp;
+
         /// <summary>
         /// Event handler for Kinect sensor's SkeletonFrameReady event
         /// </summary>
@@ -204,7 +170,7 @@ namespace FesianXu.KinectGestureControl
         private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             Skeleton[] skeletons = new Skeleton[0];
-
+            mainImageBoxDraw draw = new mainImageBoxDraw(ref skeltmp, ref sensor);
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
             {
                 if (skeletonFrame != null)
@@ -214,36 +180,31 @@ namespace FesianXu.KinectGestureControl
                 }
             }
 
-            using (DrawingContext dc = this.drawingGroup.Open())
+            // open a drawing context and need to close it manully
+            DrawingContext dc = this.drawingGroup.Open();
+            // Draw a transparent background to set the render size
+            dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+            draw.addDrawingContext(ref dc);
+            if (skeletons.Length != 0)
             {
-                // Draw a transparent background to set the render size
-                dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
-
-                if (skeletons.Length != 0)
+                for (int i = 0; i < skeletons.Length; i++)
                 {
-                    foreach (Skeleton skel in skeletons)
+                    skeltmp = skeletons[i];
+                    draw.updateSkeleton(ref skeltmp);
+                    draw.RenderClippedEdges(RenderWidth, RenderHeight, ClipBoundsThickness);
+                    if (skeltmp.TrackingState == SkeletonTrackingState.Tracked)
                     {
-                        RenderClippedEdges(skel, dc);
-
-                        if (skel.TrackingState == SkeletonTrackingState.Tracked)
-                        {
-                            this.DrawBonesAndJoints(skel, dc);
-                        }
-                        else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
-                        {
-                            dc.DrawEllipse(
-                            this.centerPointBrush,
-                            null,
-                            this.SkeletonPointToScreen(skel.Position),
-                            BodyCenterThickness,
-                            BodyCenterThickness);
-                        }
+                        draw.drawBonesAndJoints();
+                    }
+                    else if (skeltmp.TrackingState == SkeletonTrackingState.PositionOnly)
+                    {
+                        draw.drawEllipse();
                     }
                 }
-
-                // prevent drawing outside of our render area
-                this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
             }
+            // prevent drawing outside of our render area
+            this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+            dc.Close();
         }
 
         /// <summary>
