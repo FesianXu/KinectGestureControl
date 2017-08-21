@@ -9,18 +9,14 @@
 namespace FesianXu.KinectGestureControl
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows.Media;
     using Microsoft.Kinect;
     using System.Windows;
 
-    enum HandInFront { LeftHand, RightHand, BothHand, NoDetect };
+    enum HandInFront { LeftHand, RightHand, SamePlane, NoDetect };
     enum ImageFrameTypes { ColorFrame, DepthFrame, SkeletonFrame };
 
-    class mainImageBoxDraw : SkeletonShow
+    class mainImageBoxDraw : SkeletonShow, Drawing
     {
         private Skeleton skel; // the skeleton
         private DrawingContext drawingContext;
@@ -338,8 +334,6 @@ namespace FesianXu.KinectGestureControl
                     );
             }
         }
-
-
 
 
 

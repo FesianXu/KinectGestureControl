@@ -82,6 +82,20 @@ namespace FesianXu.KinectGestureControl
         /// </summary>
         private DrawingImage imageSource;
 
+        private byte[] rawColorPixels; // raw color frame pixels
+        private int colorFrameStride;
+        private int colorFrameWidth;
+        private int colorFrameHeight;
+
+        private short[] rawDepthPixels; // raw depth frame pixels
+        private byte[] depthInfoPixels; // depth information parse from rawDepthPixels
+        private int depthFrameStride;
+        private int depthFrameWidth;
+        private int depthFrameHeight;
+        private int min_depth;
+        private int max_depth;
+
+
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
@@ -89,7 +103,6 @@ namespace FesianXu.KinectGestureControl
         {
             InitializeComponent();
         }
-
 
 
         /// <summary>
@@ -121,14 +134,17 @@ namespace FesianXu.KinectGestureControl
             {
                 // Turn on the skeleton stream to receive skeleton frames
                 this.sensor.SkeletonStream.Enable();
+                this.sensor.ColorStream.Enable();
+                this.sensor.DepthStream.Enable();
 
                 // Add an event handler to be called whenever there is new color frame data
-                this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
+                this.sensor.AllFramesReady += this.AllFrameReadyHandle;
 
                 // Start the sensor!
                 try
                 {
                     this.sensor.Start();
+                    this.sensor.ElevationAngle = 6;
                 }
                 catch (IOException)
                 {
@@ -163,7 +179,7 @@ namespace FesianXu.KinectGestureControl
         /// </summary>
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
-        private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        private void AllFrameReadyHandle(object sender, AllFramesReadyEventArgs e)
         {
             Skeleton[] skeletons = new Skeleton[0];
             mainImageBoxDraw draw = new mainImageBoxDraw(ref skeltmp, ref sensor);
@@ -174,7 +190,31 @@ namespace FesianXu.KinectGestureControl
                     skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
                     skeletonFrame.CopySkeletonDataTo(skeletons);
                 }
+            } // get skeleton frames
+            using (ColorImageFrame imgFrame = e.OpenColorImageFrame())
+            {
+                if (imgFrame == null)
+                    return;
+                rawColorPixels = new byte[imgFrame.PixelDataLength];
+                imgFrame.CopyPixelDataTo(rawColorPixels);
+                colorFrameStride = imgFrame.Width * 4;
+                colorFrameWidth = imgFrame.Width;
+                colorFrameHeight = imgFrame.Height;
             }
+            using (DepthImageFrame depFrame = e.OpenDepthImageFrame())
+            {
+                if (depFrame == null)
+                    return;
+                rawDepthPixels = new short[depFrame.PixelDataLength];
+                depthInfoPixels = new byte[depFrame.PixelDataLength];
+                depFrame.CopyPixelDataTo(rawDepthPixels);
+                depthFrameStride = depFrame.Width;
+                depthFrameWidth = depFrame.Width;
+                depthFrameHeight = depFrame.Height;
+                min_depth = depFrame.MinDepth;
+                max_depth = depFrame.MaxDepth;
+            }
+
 
             // open a drawing context and need to close it manully
             DrawingContext dc = this.drawingGroup.Open();
@@ -187,111 +227,7 @@ namespace FesianXu.KinectGestureControl
             dc.Close();
         }
 
-        /// <summary>
-        /// Draws a skeleton's bones and joints
-        /// </summary>
-        /// <param name="skeleton">skeleton to draw</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
-        private void DrawBonesAndJoints(Skeleton skeleton, DrawingContext drawingContext)
-        {
-            // Render Torso
-            this.DrawBone(skeleton, drawingContext, JointType.Head, JointType.ShoulderCenter);
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderRight);
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.Spine);
-            this.DrawBone(skeleton, drawingContext, JointType.Spine, JointType.HipCenter);
-            this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
-
-            // Left Arm
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
-
-            // Right Arm
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
-            this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
-            this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
-
-            // Left Leg
-            this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
-
-            // Right Leg
-            this.DrawBone(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
-            this.DrawBone(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
-            this.DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
-
-            // Render Joints
-            foreach (Joint joint in skeleton.Joints)
-            {
-                Brush drawBrush = null;
-
-                if (joint.TrackingState == JointTrackingState.Tracked)
-                {
-                    drawBrush = this.trackedJointBrush;
-                }
-                else if (joint.TrackingState == JointTrackingState.Inferred)
-                {
-                    drawBrush = this.inferredJointBrush;
-                }
-
-                if (drawBrush != null)
-                {
-                    drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen(joint.Position), JointThickness, JointThickness);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Maps a SkeletonPoint to lie within our render space and converts to Point
-        /// </summary>
-        /// <param name="skelpoint">point to map</param>
-        /// <returns>mapped point</returns>
-        private Point SkeletonPointToScreen(SkeletonPoint skelpoint)
-        {
-            // Convert point to depth space.  
-            // We are not using depth directly, but we do want the points in our 640x480 output resolution.
-            DepthImagePoint depthPoint = this.sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
-            return new Point(depthPoint.X, depthPoint.Y);
-        }
-
-        /// <summary>
-        /// Draws a bone line between two joints
-        /// </summary>
-        /// <param name="skeleton">skeleton to draw bones from</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
-        /// <param name="jointType0">joint to start drawing from</param>
-        /// <param name="jointType1">joint to end drawing at</param>
-        private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
-        {
-            Joint joint0 = skeleton.Joints[jointType0];
-            Joint joint1 = skeleton.Joints[jointType1];
-
-            // If we can't find either of these joints, exit
-            if (joint0.TrackingState == JointTrackingState.NotTracked ||
-                joint1.TrackingState == JointTrackingState.NotTracked)
-            {
-                return;
-            }
-
-            // Don't draw if both points are inferred
-            if (joint0.TrackingState == JointTrackingState.Inferred &&
-                joint1.TrackingState == JointTrackingState.Inferred)
-            {
-                return;
-            }
-
-            // We assume all drawn bones are inferred unless BOTH joints are tracked
-            Pen drawPen = this.inferredBonePen;
-            if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
-            {
-                drawPen = this.trackedBonePen;
-            }
-
-            drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));
-        }
+        
 
         /// <summary>
         /// Handles the checking or unchecking of the seated mode combo box
