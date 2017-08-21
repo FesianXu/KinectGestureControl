@@ -1,4 +1,5 @@
-﻿//------------------------------------------------------------------------------
+﻿using System;
+//------------------------------------------------------------------------------
 // <copyright file="MainWindow.xaml.cs" company="Microsoft">
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
 // </copyright>
@@ -10,6 +11,7 @@ namespace FesianXu.KinectGestureControl
     using System.Windows;
     using System.Windows.Media;
     using Microsoft.Kinect;
+    using System.Windows.Media.Imaging;
 
 
     /// <summary>
@@ -181,8 +183,12 @@ namespace FesianXu.KinectGestureControl
         /// <param name="e">event arguments</param>
         private void AllFrameReadyHandle(object sender, AllFramesReadyEventArgs e)
         {
+            DateTime total_before = DateTime.Now;
+
             Skeleton[] skeletons = new Skeleton[0];
             mainImageBoxDraw draw = new mainImageBoxDraw(ref skeltmp, ref sensor);
+            DrivingHandInfo info = new DrivingHandInfo(ref sensor);
+            RawByteProcess byteprocess = new RawByteProcess();
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
             {
                 if (skeletonFrame != null)
@@ -221,10 +227,49 @@ namespace FesianXu.KinectGestureControl
             draw.addDrawingContext(ref dc);
             draw.getRenderAndClipBounds(RenderWidth, RenderHeight, ClipBoundsThickness);
             draw.drawBackgraoud();
-            draw.drawMatchStickMen(ref skeletons);
+
+            if (skeletons.Length != 0)
+            {
+                for (int id_skel = 0; id_skel < skeletons.Length; id_skel++)
+                {
+                    skeltmp = skeletons[id_skel];
+                    draw.drawMatchStickMen(ref skeltmp);
+                    if (skeltmp.TrackingState == SkeletonTrackingState.Tracked)
+                    {
+                        info.updateSkeleton(ref skeltmp);
+                        info.computeKeyJoints();
+                        info.computeKeyPointsAndInfo();
+                        angleBox.Text = "Angle = " + (float)Math.Round((double)info.Angle, 2) + "°";
+                        angleRateBox.Text = "AngleRate = " + (float)Math.Round((double)info.AngleRate, 2) + "°";
+                        // parameters update and showing
+                        System.Drawing.Rectangle lroi = info.getROI(HandsEnum.leftHand);
+                        System.Drawing.Rectangle rroi = info.getROI(HandsEnum.rightHand);
+                        byte[] lhand_p = byteprocess.mapColorImageROI(ref rawColorPixels, lroi);
+                        byte[] rhand_p = byteprocess.mapColorImageROI(ref rawColorPixels, rroi);
+                        BitmapSource lhand_bs = WriteableBitmap.Create(info.handWidth, info.handHeight,
+                            96, 96, PixelFormats.Bgr32, null, lhand_p, info.handWidth*4);
+                        BitmapSource rhand_bs = WriteableBitmap.Create(info.handWidth, info.handHeight,
+                             96, 96, PixelFormats.Bgr32, null, rhand_p, info.handWidth * 4);
+
+
+
+
+                        left_hand_color_box.Source = lhand_bs;
+                        right_hand_color_box.Source = rhand_bs;
+                    }
+                }
+            }
+
+
             // prevent drawing outside of our render area
             this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
             dc.Close();
+
+
+            DateTime total_after = System.DateTime.Now;
+            TimeSpan total_ts = total_after.Subtract(total_before);
+            double total_tf = total_ts.TotalMilliseconds;
+            TotalCostTimeBox.Text = "TotalCostTime = "+total_tf.ToString()+" ms";
         }
 
         

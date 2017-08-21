@@ -52,7 +52,7 @@ namespace FesianXu.KinectGestureControl
             skel = skeleton;
         }
 
-        private void computeKeyJoints()
+        public void computeKeyJoints()
         {
             jspine_shoulder = skel.Joints[JointType.ShoulderCenter];
             jwrist_left = skel.Joints[JointType.WristLeft];
@@ -61,7 +61,7 @@ namespace FesianXu.KinectGestureControl
             jright3d = skel.Joints[JointType.HandRight];
         }
 
-        private void computeKeyPointsAndInfo()
+        public void computeKeyPointsAndInfo()
         {
             dis2left = (int)(jwrist_left.Position.Z * 1000);
             dis2right = (int)(jwrist_right.Position.Z * 1000);
@@ -93,18 +93,21 @@ namespace FesianXu.KinectGestureControl
 
         public System.Drawing.Rectangle getROI(HandsEnum whichHand)
         {
-            System.Drawing.Rectangle roi = new System.Drawing.Rectangle();
             if (whichHand == HandsEnum.leftHand)
-                roi = new System.Drawing.Rectangle((int)jleft2d_color.X - hands_size_width / 2, (int)jleft2d_color.Y - hands_size_height / 2,
+                return new System.Drawing.Rectangle((int)jleft2d_color.X - hands_size_width / 2, (int)jleft2d_color.Y - hands_size_height / 2,
                                                    hands_size_width, hands_size_height);
-            else if(whichHand == HandsEnum.rightHand)
-                roi = new System.Drawing.Rectangle((int)jright2d_color.X - hands_size_width / 2, (int)jright2d_color.Y - hands_size_height / 2,
+            else if (whichHand == HandsEnum.rightHand)
+                return new System.Drawing.Rectangle((int)jright2d_color.X - hands_size_width / 2, (int)jright2d_color.Y - hands_size_height / 2,
                                    hands_size_width, hands_size_height);
-            return roi;
+            else
+                return new System.Drawing.Rectangle();
         }
 
 
-
+        public int handWidth { get { return hands_size_width; } }
+        public int handHeight { get { return hands_size_height; } }
+        public double Angle { get { return angle; } }
+        public double AngleRate { get { return angle_rate; } }
 
     }
 }

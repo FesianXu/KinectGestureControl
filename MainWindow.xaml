@@ -107,7 +107,9 @@
         <TextBlock Name="angleRateBox" HorizontalAlignment="Left" Margin="22,431,0,0" Grid.Row="1" TextWrapping="Wrap" Text="AngleRate = ?" VerticalAlignment="Top" FontSize="15px"/>
         <TextBlock Name="LeftHandStatusBox" HorizontalAlignment="Left" Margin="22,456,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Left hand is ?" VerticalAlignment="Top" FontSize="15px"/>
         <TextBlock Name="RightHandStatusBox" HorizontalAlignment="Left" Margin="22,481,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Right hand is ?" VerticalAlignment="Top" FontSize="15px"/>
+        
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="60" Grid.Row="2" VerticalAlignment="Top" Width="984" Grid.RowSpan="2"/>
+        <TextBlock x:Name="TotalCostTimeBox" HorizontalAlignment="Left" Margin="293,406,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Total Cost Time = ?" VerticalAlignment="Top" FontSize="15px"/>
 
 
 

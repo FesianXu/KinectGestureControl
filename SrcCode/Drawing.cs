@@ -26,9 +26,8 @@ namespace FesianXu.KinectGestureControl
         /// <summary>
         /// To draw the matchstick men in the mainImageBox and draw the joints.
         /// </summary>
-        /// <param name="skeleton_list">the list of skeletons</param>
-        /// <returns>the length of skeletons</returns>
-        int drawMatchStickMen(ref Skeleton[] skeleton_list);
+        /// <param name="skeleton">skeletons reference</param>
+        void drawMatchStickMen(ref Skeleton skeleton);
 
         /// <summary>
         /// To draw the steering wheel in the mainImageBox with the left hand point and the right 

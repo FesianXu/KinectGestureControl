@@ -45,17 +45,6 @@ namespace FesianXu.KinectGestureControl
 
     class RawByteProcess: KinectBasicOperator, RawByteMapping
     {
-        private byte[] lhand_color_bytes;
-        private byte[] rhand_color_bytes;
-        private byte[] lhand_depth_bytes;
-        private byte[] rhand_depth_bytes;
-
-        public RawByteProcess()
-        {
-            lhand_color_bytes = new byte[hands_size_height * hands_size_width * img_channels];
-            rhand_color_bytes = new byte[hands_size_height * hands_size_width * img_channels];
-        }
-
         public byte[] mapColorImageROI(ref byte[] raw, Rectangle roi, int channels = 4)
         {
             int roix = roi.X;
@@ -69,7 +58,7 @@ namespace FesianXu.KinectGestureControl
                 {
                     for (int c = 0; c < channels; c++)
                     {
-                        img[4 * ((y - roiy) * width + (x - roix)) + c] = raw[4 * (640 * y + x) + c];
+                        img[4 * ((y - roiy) * width + (x - roix)) + c] = raw[4 * (img_size_width * y + x) + c];
                     }
                 }
             }
@@ -88,7 +77,7 @@ namespace FesianXu.KinectGestureControl
             {
                 for (int x = roix; x < roix + width; x++)
                 {
-                    part[(y - roiy) * width + (x - roix)] = raw[640 * y + x];
+                    part[(y - roiy) * width + (x - roix)] = raw[img_size_width * y + x];
                 }
             }
             for (int ind = 0; ind < part.Length; ind++)

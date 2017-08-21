@@ -39,7 +39,7 @@ namespace FesianXu.KinectGestureControl
         // Thickness of body center ellipse
         private const double BodyCenterThickness = 10;
 
-        private static float RenderWidth ;
+        private static float RenderWidth;
         private static float RenderHeight;
         private static double ClipBoundsThickness;
 
@@ -263,26 +263,19 @@ namespace FesianXu.KinectGestureControl
 
 
 
-        public int drawMatchStickMen(ref Skeleton[] skeleton_list)
+        public void drawMatchStickMen(ref Skeleton skeleton)
         {
-            if (skeleton_list.Length != 0)
+            updateSkeleton(ref skeleton);
+            RenderClippedEdges();
+            if (skeleton.TrackingState == SkeletonTrackingState.Tracked)
             {
-                for (int i = 0; i < skeleton_list.Length; i++)
-                {
-                    var skeltmp = skeleton_list[i];
-                    updateSkeleton(ref skeltmp);
-                    RenderClippedEdges();
-                    if (skeltmp.TrackingState == SkeletonTrackingState.Tracked)
-                    {
-                        drawBonesAndJoints();
-                    }
-                    else if (skeltmp.TrackingState == SkeletonTrackingState.PositionOnly)
-                    {
-                        drawEllipse();
-                    }
-                }
+                drawBonesAndJoints();
             }
-            return skeleton_list.Length;
+            else if (skeleton.TrackingState == SkeletonTrackingState.PositionOnly)
+            {
+                drawEllipse();
+            }
+
         }
 
 
