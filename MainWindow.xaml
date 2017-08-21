@@ -79,13 +79,13 @@
         <!--color hands frame-->
         <Image x:Name="left_hand_color_box" HorizontalAlignment="Left" Height="128" Margin="86,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128" />
         <Border Name="left_hand_color_border"  BorderBrush="Red" BorderThickness="2" HorizontalAlignment="Left" Height="128" Margin="86,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
-        <CheckBox x:Name="isShowColorHands" Content="whether show color hands or not" HorizontalAlignment="Left" Margin="158,172,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <CheckBox x:Name="isShowColorHands" Content="Click to show color hands images" HorizontalAlignment="Left" Margin="158,172,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="isShowColorHands_Checked" Unchecked="isShowColorHands_Checked"/>
         <Image x:Name="right_hand_color_box" HorizontalAlignment="Left" Height="128" Margin="300,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
         <Border Name="right_hand_color_border"  BorderBrush="Red" BorderThickness="2" HorizontalAlignment="Left" Height="128" Margin="300,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
         <!--depth hands frame-->
         <Image x:Name="left_hand_depth_box" HorizontalAlignment="Left" Height="128" Margin="86,207,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
         <Border Name="left_hand_depth_border"  BorderBrush="Red" BorderThickness="2" HorizontalAlignment="Left" Height="128" Margin="86,207,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
-        <CheckBox x:Name="isShowDepthHands" Content="whether show depth hands or not" HorizontalAlignment="Left" Margin="158,353,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <CheckBox x:Name="isShowDepthHands" Content="Click to show depth hands images" HorizontalAlignment="Left" Margin="158,353,0,0" Grid.Row="1" VerticalAlignment="Top"/>
         <Image x:Name="right_hand_depth_box" HorizontalAlignment="Left" Height="128" Margin="300,207,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
         <Border Name="right_hand_depth_border"  BorderBrush="Red" BorderThickness="2" HorizontalAlignment="Left" Height="128" Margin="300,207,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
         <!--frames border-->
@@ -100,7 +100,7 @@
                 <Image x:Name="mainImageShow" HorizontalAlignment="Center" Height="1138" Margin="-1,-1,-1,0" Grid.Row="1" VerticalAlignment="Center"/>
             </Border>
         </Viewbox>
-        <ComboBox x:Name="backgroundInMainWindow" HorizontalAlignment="Left" Margin="833,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="120" SelectionChanged="backgroundInMainWindow_SelectionChanged"/>
+        <!--<ComboBox x:Name="backgroundInMainWindow" HorizontalAlignment="Left" Margin="833,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="120" SelectionChanged="backgroundInMainWindow_SelectionChanged"/>-->
 
         <!--params border-->
         <TextBlock Name="angleBox"  HorizontalAlignment="Left" Margin="22,406,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Angle = ?" VerticalAlignment="Top" FontSize="20px"/>

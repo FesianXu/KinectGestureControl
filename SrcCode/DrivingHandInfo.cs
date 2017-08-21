@@ -108,6 +108,8 @@ namespace FesianXu.KinectGestureControl
         public int handHeight { get { return hands_size_height; } }
         public double Angle { get { return angle; } }
         public double AngleRate { get { return angle_rate; } }
+        public Point LeftHandPoint { get { return jleft2d_color; } }
+        public Point RightHandPoint { get { return jright2d_color; } }
 
     }
 }
