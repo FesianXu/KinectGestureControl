@@ -43,6 +43,9 @@ namespace FesianXu.KinectGestureControl
         // Thickness of body center ellipse
         private const double BodyCenterThickness = 10;
 
+        private static float RenderWidth ;
+        private static float RenderHeight;
+        private static double ClipBoundsThickness;
 
         /// <summary>
         /// 
@@ -73,6 +76,20 @@ namespace FesianXu.KinectGestureControl
         public void updateSkeleton(ref Skeleton skeleton)
         {
             skel = skeleton;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="thickness"></param>
+        public void getRenderAndClipBounds(float width, float height, double thickness)
+        {
+            RenderWidth = width;
+            RenderHeight = height;
+            ClipBoundsThickness = thickness;
         }
 
 
@@ -123,7 +140,7 @@ namespace FesianXu.KinectGestureControl
         /// 
         /// </summary>
         /// <param name="ftype"></param>
-        public void drawBonesAndJoints(ImageFrameTypes ftype = ImageFrameTypes.ColorFrame)
+        private void drawBonesAndJoints(ImageFrameTypes ftype = ImageFrameTypes.ColorFrame)
         {
             // Render Torso
             this.drawBoneInImage(JointType.Head, JointType.ShoulderCenter, ftype);
@@ -184,7 +201,7 @@ namespace FesianXu.KinectGestureControl
         /// 
         /// </summary>
         /// <param name="ftype"></param>
-        public void drawEllipse(ImageFrameTypes ftype = ImageFrameTypes.ColorFrame)
+        private void drawEllipse(ImageFrameTypes ftype = ImageFrameTypes.ColorFrame)
         {
             if (ftype == ImageFrameTypes.ColorFrame)
                 drawingContext.DrawEllipse(centerPointBrush,
@@ -206,7 +223,7 @@ namespace FesianXu.KinectGestureControl
         /// <param name="RenderWidth"></param>
         /// <param name="RenderHeight"></param>
         /// <param name="ClipBoundsThickness"></param>
-        public void RenderClippedEdges(float RenderWidth, float RenderHeight, double ClipBoundsThickness)
+        private void RenderClippedEdges()
         {
             if (skel.ClippedEdges.HasFlag(FrameEdges.Bottom))
             {
@@ -243,15 +260,84 @@ namespace FesianXu.KinectGestureControl
 
 
 
+        public void drawBackgraoud()
+        {
+            drawingContext.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+        }
 
 
 
+        public int drawMatchStickMen(ref Skeleton[] skeleton_list)
+        {
+            if (skeleton_list.Length != 0)
+            {
+                for (int i = 0; i < skeleton_list.Length; i++)
+                {
+                    var skeltmp = skeleton_list[i];
+                    updateSkeleton(ref skeltmp);
+                    RenderClippedEdges();
+                    if (skeltmp.TrackingState == SkeletonTrackingState.Tracked)
+                    {
+                        drawBonesAndJoints();
+                    }
+                    else if (skeltmp.TrackingState == SkeletonTrackingState.PositionOnly)
+                    {
+                        drawEllipse();
+                    }
+                }
+            }
+            return skeleton_list.Length;
+        }
 
 
 
+        public void drawSteeringWheel(Point lh, Point rh)
+        {
+            Point pos_center2d = new Point((lh.X + rh.X) / 2, (lh.Y + rh.Y) / 2);
+            double radius = Math.Sqrt(Math.Pow((lh.X - rh.X), 2) + Math.Pow((lh.Y - rh.Y), 2)) / 2;
+            Point hori_left = new Point(pos_center2d.X - radius, pos_center2d.Y);
+            Point hori_right = new Point(pos_center2d.X + radius, pos_center2d.Y);
+            drawingContext.DrawLine(direction_pen, lh, rh);
+            drawingContext.DrawLine(horizon_pen, hori_left, hori_right);
+            drawingContext.DrawEllipse(null,
+                wheel_pen,
+                pos_center2d,
+                radius,
+                radius
+                );
+        }
 
 
-
+        public void drawSingleHandInWheel(Point shand, Point center2d, HandsEnum whichHand)
+        {
+            double radius = distance2d(shand, center2d);
+            if (whichHand == HandsEnum.leftHand)
+            {
+                Point hori_left = new Point(center2d.X - radius, center2d.Y);
+                Point hori_right = new Point(center2d.X + radius, center2d.Y);
+                drawingContext.DrawLine(direction_pen, shand, center2d);
+                drawingContext.DrawLine(horizon_pen, hori_left, hori_right);
+                drawingContext.DrawEllipse(null,
+                    wheel_pen,
+                    center2d,
+                    radius,
+                    radius
+                    );
+            }
+            else if (whichHand == HandsEnum.rightHand)
+            {
+                Point hori_left = new Point(center2d.X - radius, center2d.Y);
+                Point hori_right = new Point(center2d.X + radius, center2d.Y);
+                drawingContext.DrawLine(direction_pen, shand, center2d);
+                drawingContext.DrawLine(horizon_pen, hori_left, hori_right);
+                drawingContext.DrawEllipse(null,
+                    wheel_pen,
+                    center2d,
+                    radius,
+                    radius
+                    );
+            }
+        }
 
 
 

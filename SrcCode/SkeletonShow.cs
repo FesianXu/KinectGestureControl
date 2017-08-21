@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace FesianXu.KinectGestureControl
 {
-    class SkeletonShow
+    class SkeletonShow: KinectBasicOperator
     {
         private static KinectSensor sensor;
         public SkeletonShow(ref KinectSensor s)

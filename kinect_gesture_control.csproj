@@ -71,6 +71,7 @@
     </ApplicationDefinition>
     <Compile Include="SrcCode\Drawing.cs" />
     <Compile Include="SrcCode\HandRecognition.cs" />
+    <Compile Include="SrcCode\KinectBasicOperator.cs" />
     <Compile Include="SrcCode\mainImageBoxDraw.cs" />
     <Compile Include="SrcCode\RawByteMapping.cs" />
     <Compile Include="SrcCode\SkeletonShow.cs" />

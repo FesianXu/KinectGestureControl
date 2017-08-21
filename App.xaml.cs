@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace kinect_gesture_control
+namespace FesianXu.KinectGestureControl
 {
     /// <summary>
     /// App.xaml 的交互逻辑

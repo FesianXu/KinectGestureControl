@@ -106,12 +106,8 @@ namespace FesianXu.KinectGestureControl
             this.imageSource = new DrawingImage(this.drawingGroup);
 
             // Display the drawing using our image control
-            Image.Source = this.imageSource;
+            mainImageShow.Source = this.imageSource;
 
-            // Look through all sensors and start the first connected one.
-            // This requires that a Kinect is connected at the time of app startup.
-            // To make your app robust against plug/unplug, 
-            // it is recommended to use KinectSensorChooser provided in Microsoft.Kinect.Toolkit (See components in Toolkit Browser).
             foreach (var potentialSensor in KinectSensor.KinectSensors)
             {
                 if (potentialSensor.Status == KinectStatus.Connected)
@@ -182,26 +178,10 @@ namespace FesianXu.KinectGestureControl
 
             // open a drawing context and need to close it manully
             DrawingContext dc = this.drawingGroup.Open();
-            // Draw a transparent background to set the render size
-            dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
             draw.addDrawingContext(ref dc);
-            if (skeletons.Length != 0)
-            {
-                for (int i = 0; i < skeletons.Length; i++)
-                {
-                    skeltmp = skeletons[i];
-                    draw.updateSkeleton(ref skeltmp);
-                    draw.RenderClippedEdges(RenderWidth, RenderHeight, ClipBoundsThickness);
-                    if (skeltmp.TrackingState == SkeletonTrackingState.Tracked)
-                    {
-                        draw.drawBonesAndJoints();
-                    }
-                    else if (skeltmp.TrackingState == SkeletonTrackingState.PositionOnly)
-                    {
-                        draw.drawEllipse();
-                    }
-                }
-            }
+            draw.getRenderAndClipBounds(RenderWidth, RenderHeight, ClipBoundsThickness);
+            draw.drawBackgraoud();
+            draw.drawMatchStickMen(ref skeletons);
             // prevent drawing outside of our render area
             this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
             dc.Close();
@@ -331,6 +311,11 @@ namespace FesianXu.KinectGestureControl
                     this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
                 }
             }
+        }
+
+        private void backgroundInMainWindow_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="FesianXu.KinectGestureControl.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Kinect Gesture Control Demo" Height="735" Width="770" Loaded="WindowLoaded" Closing="WindowClosing">
+        Title="Kinect Gesture Control Demo" Height="735" Width="1012" Loaded="WindowLoaded" Closing="WindowClosing">
 
     <Window.Resources>
         <SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e"/>
@@ -46,7 +46,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid Name="layoutGrid" Margin="10 0 10 0">
+    <Grid Name="layoutGrid" Margin="10,0,10,2">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -55,19 +55,65 @@
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" Margin="0 0 0 20">
             <Image DockPanel.Dock="Left" Source="Resources\Images\Logo.png" Stretch="Fill" Height="32" Width="81" Margin="0 10 0 5"/>
-            
+
             <TextBlock DockPanel.Dock="Right" Margin="0 0 -1 0" VerticalAlignment="Bottom" Foreground="{StaticResource MediumGreyBrush}" FontFamily="Segoe UI" FontSize="18">Kinect Gesture Control Demo</TextBlock>
             <Image Grid.Column="1" Source="Resources\Images\Status.png" Stretch="None" HorizontalAlignment="Center" Margin="0 0 0 5"/>
         </DockPanel>
-        <Viewbox Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Center">
-            <Image Name="Image" Width="640" Height="480"/>
+        <!--
+        <Viewbox Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Right">
+            <Border BorderBrush="Blue" BorderThickness="1">
+                <Image Name="mainImageShow" Width="321" Height="391"/>
+            </Border>
         </Viewbox>
-        <CheckBox Grid.Row="2" Style="{StaticResource SquareCheckBox}" Content="Seated Mode" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="25,10,0,10" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Width="158"/>
+        -->
+
+        <CheckBox Grid.Row="2" Style="{StaticResource SquareCheckBox}" Content="Seated Mode" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,10,0,10" Name="checkBoxSeatedMode" Checked="CheckBoxSeatedModeChanged" Unchecked="CheckBoxSeatedModeChanged" Width="158"/>
+
+
         <StatusBar Grid.Row="3" HorizontalAlignment="Stretch" Name="statusBar" VerticalAlignment="Bottom" Background="White" Foreground="{StaticResource MediumGreyBrush}">
             <StatusBarItem Padding="0 0 0 10">
                 <TextBlock Name="statusBarText" Margin="-1 0 0 0">Click 'Seated' to change skeletal pipeline type!</TextBlock>
             </StatusBarItem>
         </StatusBar>
-        <TextBlock x:Name="AuthorName" HorizontalAlignment="Left" Margin="86,10,0,0" TextWrapping="Wrap" Text="Author: FesianXu" VerticalAlignment="Top" Height="17" Width="108" FontSize="12px"/>
+        <TextBlock x:Name="AuthorName" HorizontalAlignment="Left" Margin="86,10,0,0" TextWrapping="Wrap" Text="Author: FesianXu" VerticalAlignment="Top" Height="37" Width="128" FontSize="15px"/>
+        <!--color hands frame-->
+        <Image x:Name="left_hand_color_box" HorizontalAlignment="Left" Height="128" Margin="86,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128" />
+        <Border Name="left_hand_color_border"  BorderBrush="Red" BorderThickness="2" HorizontalAlignment="Left" Height="128" Margin="86,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
+        <CheckBox x:Name="isShowColorHands" Content="whether show color hands or not" HorizontalAlignment="Left" Margin="158,172,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Image x:Name="right_hand_color_box" HorizontalAlignment="Left" Height="128" Margin="300,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
+        <Border Name="right_hand_color_border"  BorderBrush="Red" BorderThickness="2" HorizontalAlignment="Left" Height="128" Margin="300,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
+        <!--depth hands frame-->
+        <Image x:Name="left_hand_depth_box" HorizontalAlignment="Left" Height="128" Margin="86,207,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
+        <Border Name="left_hand_depth_border"  BorderBrush="Red" BorderThickness="2" HorizontalAlignment="Left" Height="128" Margin="86,207,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
+        <CheckBox x:Name="isShowDepthHands" Content="whether show depth hands or not" HorizontalAlignment="Left" Margin="158,353,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Image x:Name="right_hand_depth_box" HorizontalAlignment="Left" Height="128" Margin="300,207,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
+        <Border Name="right_hand_depth_border"  BorderBrush="Red" BorderThickness="2" HorizontalAlignment="Left" Height="128" Margin="300,207,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
+        <!--frames border-->
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="389" Margin="10,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="504"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="162" Margin="10,394,0,0" Grid.Row="1" VerticalAlignment="Top" Width="504"/>
+
+
+
+
+        <Viewbox HorizontalAlignment="Right" Height="379" Margin="0,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="456">
+            <Border BorderBrush="Blue" BorderThickness="1" Height="1134" Width="1364">
+                <Image x:Name="mainImageShow" HorizontalAlignment="Center" Height="1138" Margin="-1,-1,-1,0" Grid.Row="1" VerticalAlignment="Center"/>
+            </Border>
+        </Viewbox>
+        <ComboBox x:Name="backgroundInMainWindow" HorizontalAlignment="Left" Margin="833,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="120" SelectionChanged="backgroundInMainWindow_SelectionChanged"/>
+
+        <!--params border-->
+        <TextBlock Name="angleBox"  HorizontalAlignment="Left" Margin="22,406,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Angle = ?" VerticalAlignment="Top" FontSize="15px"/>
+        <TextBlock Name="angleRateBox" HorizontalAlignment="Left" Margin="22,431,0,0" Grid.Row="1" TextWrapping="Wrap" Text="AngleRate = ?" VerticalAlignment="Top" FontSize="15px"/>
+        <TextBlock Name="LeftHandStatusBox" HorizontalAlignment="Left" Margin="22,456,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Left hand is ?" VerticalAlignment="Top" FontSize="15px"/>
+        <TextBlock Name="RightHandStatusBox" HorizontalAlignment="Left" Margin="22,481,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Right hand is ?" VerticalAlignment="Top" FontSize="15px"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="60" Grid.Row="2" VerticalAlignment="Top" Width="984" Grid.RowSpan="2"/>
+
+
+
+
+
+
+
     </Grid>
 </Window>
