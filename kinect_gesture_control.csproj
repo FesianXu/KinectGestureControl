@@ -101,6 +101,7 @@
     <Compile Include="SrcCode\HandRecognition.cs" />
     <Compile Include="SrcCode\KinectBasicOperator.cs" />
     <Compile Include="SrcCode\mainImageBoxDraw.cs" />
+    <Compile Include="SrcCode\MyException.cs" />
     <Compile Include="SrcCode\RawByteMapping.cs" />
     <Compile Include="SrcCode\SkeletonShow.cs" />
     <Page Include="MainWindow.xaml">

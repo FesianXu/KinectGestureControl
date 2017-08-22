@@ -35,14 +35,24 @@ namespace FesianXu.KinectGestureControl
 
         private HandInFront whichHandInFront;
         // const thresholds
-        private const double notInSamePlane_threshold = 0.2f;
-        private const double bothHandsRadius_threshold = 50;
-        private const double singleHandsAway_threshold = 70;
+        public const double notInSamePlane_threshold = 0.2f;
+        public const double bothHandsRadius_threshold = 50;
+        public const double singleHandsAway_threshold = 70;
 
         //driving hands info
         private double angle;
         private double angle_rate;
+
+        // old data
         private double old_angle;
+        private double old_radius;
+        private Point old_jleft2d;
+        private Point old_jright2d;
+        private Joint old_jleft3d;
+        private Joint old_jright3d;
+        private Point old_pos_center2d;
+
+        private bool isFirstToNormal = true;
 
         public DrivingHandInfo(ref KinectSensor sensor):base(ref sensor)
         {
@@ -104,12 +114,29 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        public void updateOldData()
+        {
+            old_jleft2d = jleft2d_color;
+            old_jright2d = jright2d_color;
+            old_jleft3d = jleft3d;
+            old_jright3d = jright3d;
+            old_pos_center2d = pos_center2d_color;
+            old_radius = radius;
+
+        }
+
+
         public int handWidth { get { return hands_size_width; } }
         public int handHeight { get { return hands_size_height; } }
         public double Angle { get { return angle; } }
         public double AngleRate { get { return angle_rate; } }
         public Point LeftHandPoint { get { return jleft2d_color; } }
         public Point RightHandPoint { get { return jright2d_color; } }
-
+        public double Radius { get { return radius; } }
+        public bool IsFirstToNormal { get { return isFirstToNormal; } set { isFirstToNormal = IsFirstToNormal; } }
+        public HandInFront WhichHandInFront { get { return whichHandInFront; } }
+        public double Left2CenterDistance { get { return l2c_distance2d; } }
+        public double Right2CenterDistance { get { return r2c_distance2d; } }
+        public Point OldCenterPosition { get { return old_pos_center2d; } }
     }
 }

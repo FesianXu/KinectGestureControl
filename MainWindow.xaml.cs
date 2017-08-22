@@ -283,34 +283,36 @@ namespace FesianXu.KinectGestureControl
 
                         ////////////// CNN for HandStatus recognition///////////////////////////////
                         byte[] lhand_c3 = byteprocess.removeAlphaChannel(ref lhand_p);
-                        //byte[] rhand_c3 = byteprocess.removeAlphaChannel(ref rhand_p);
+                        byte[] rhand_c3 = byteprocess.removeAlphaChannel(ref rhand_p);
                         var lhand_runner = lhand_global_sess.GetRunner();
-                        //var rhand_runner = rhand_global_sess.GetRunner();
+                        var rhand_runner = rhand_global_sess.GetRunner();
 
                         var lhand_tensor_g = new TFTensor(lhand_c3);
-                        //var rhand_tensor_g = new TFTensor(rhand_c3);
+                        var rhand_tensor_g = new TFTensor(rhand_c3);
 
                         var lhand_tensor_m = new TFTensor[] { lhand_tensor_g };
-                        //var rhand_tensor_m = new TFTensor[] { rhand_tensor_g };
+                        var rhand_tensor_m = new TFTensor[] { rhand_tensor_g };
 
                         using (TFGraph local_graph = new TFGraph())
                         {
                             lhand_tensor = CreateTensorFromRawTensor(lhand_tensor_m, local_graph);
                         }
-                        //using (TFGraph local_graph = new TFGraph())
-                        //{
-                        //    rhand_tensor = CreateTensorFromRawTensor(rhand_tensor_m, local_graph);
-                        //}
+                        using (TFGraph local_graph = new TFGraph())
+                        {
+                            rhand_tensor = CreateTensorFromRawTensor(rhand_tensor_m, local_graph);
+                        }
 
                         lhand_runner.AddInput(lhand_global_graph["input"][0], lhand_tensor).
                                    AddInput(lhand_global_graph["dropout"][0], 1.0f).
                                    Fetch(lhand_global_graph["softmax_output"][0]);
-                        //rhand_runner.AddInput(rhand_global_graph["input"][0], rhand_tensor).
-                        //           AddInput(rhand_global_graph["dropout"][0], 1.0f).
-                        //           Fetch(rhand_global_graph["softmax_output"][0]);
+                        rhand_runner.AddInput(rhand_global_graph["input"][0], rhand_tensor).
+                                   AddInput(rhand_global_graph["dropout"][0], 1.0f).
+                                   Fetch(rhand_global_graph["softmax_output"][0]);
+
 
                         TFTensor[] lhand_output;
-                        //TFTensor[] rhand_output;
+                        TFTensor[] rhand_output;
+
 
                         if (isFirstToCNN)
                         {
@@ -334,36 +336,59 @@ namespace FesianXu.KinectGestureControl
                         result_l.Dispose(true);
                         lhand_output[0].Dispose(true);
 
-                        //if (isFirstToCNN)
-                        //{
-                        //    this.sensor.AllFramesReady -= this.AllFrameReadyHandle;
-                        //    rhand_output = rhand_runner.Run();
-                        //    this.sensor.AllFramesReady += this.AllFrameReadyHandle;
-                        //    isFirstToCNN = false;
-                        //}
-                        //else
-                        //{
-                        //    rhand_output = rhand_runner.Run();
-                        //}
-                        //var result_r = rhand_output[0];
-                        //p = ((float[][])result_r.GetValue(jagged: true))[0];
-                        //if (p[0] == 1)
-                        //    RightHandStatusBox.Text = "Right Hand is palm";
-                        //else
-                        //    RightHandStatusBox.Text = "Right Hand is fist";
-                        ////release and dispose
-                        //rhand_tensor.Dispose(true);
-                        //result_r.Dispose(true);
-                        //rhand_output[0].Dispose(true);
+                        if (isFirstToCNN)
+                        {
+                            this.sensor.AllFramesReady -= this.AllFrameReadyHandle;
+                            rhand_output = rhand_runner.Run();
+                            this.sensor.AllFramesReady += this.AllFrameReadyHandle;
+                            isFirstToCNN = false;
+                        }
+                        else
+                        {
+                            rhand_output = rhand_runner.Run();
+                        }
+                        var result_r = rhand_output[0];
+                        p = ((float[][])result_r.GetValue(jagged: true))[0];
+                        if (p[0] == 1)
+                            RightHandStatusBox.Text = "Right Hand is palm";
+                        else
+                            RightHandStatusBox.Text = "Right Hand is fist";
+                        //release and dispose
+                        rhand_tensor.Dispose(true);
+                        result_r.Dispose(true);
+                        rhand_output[0].Dispose(true);
 
                         if (isShowColorHandsValue)
                         {
                             left_hand_color_box.Source = lhand_bs;
                             right_hand_color_box.Source = rhand_bs;
-                        }
+                        } // checkbox to select whether show the color hand
 
-                        draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
-                        
+
+                        // driving steering wheel
+                        if (info.Radius < DrivingHandInfo.bothHandsRadius_threshold
+                            && info.WhichHandInFront == HandInFront.SamePlane)
+                        {
+                            draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
+                        }
+                        else
+                        {
+                            if (info.Left2CenterDistance > DrivingHandInfo.singleHandsAway_threshold
+                                || info.WhichHandInFront == HandInFront.RightHand)
+                            {
+                                draw.drawSingleHandInWheel(info.RightHandPoint, info.OldCenterPosition, HandsEnum.rightHand);
+                            }
+                            else if (info.Right2CenterDistance > DrivingHandInfo.singleHandsAway_threshold
+                                || info.WhichHandInFront == HandInFront.LeftHand)
+                            {
+                                draw.drawSingleHandInWheel(info.LeftHandPoint, info.OldCenterPosition, HandsEnum.leftHand);
+                            }
+                            else
+                            {
+                                draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
+                            }
+                        }
+                        ////////////////////////////////////////////////////////////////////////////
                     }
                 }
             }
