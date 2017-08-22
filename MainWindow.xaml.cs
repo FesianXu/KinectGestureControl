@@ -107,13 +107,15 @@ namespace FesianXu.KinectGestureControl
         private static TFSession rhand_global_sess;
         private byte[] lhand_cnn_model; // cnn models raw byte streams
         private byte[] rhand_cnn_model;
-        private bool isFirstToCNN = true;
+        
         private TFTensor lhand_tensor;
         private TFTensor rhand_tensor;
 
         // checkbox values
         private bool isShowColorHandsValue = false;
 
+        private Skeleton skeltmp;
+        private RawByteMapping byteprocess = new RawByteProcess();
 
 
         /// <summary>
@@ -203,9 +205,8 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
-        //mainImageBoxDraw draw = new mainImageBoxDraw();
-        Skeleton skeltmp;
 
+        
         /// <summary>
         /// Event handler for Kinect sensor's SkeletonFrameReady event
         /// </summary>
@@ -216,9 +217,8 @@ namespace FesianXu.KinectGestureControl
             DateTime total_before = DateTime.Now;
 
             Skeleton[] skeletons = new Skeleton[0];
-            mainImageBoxDraw draw = new mainImageBoxDraw(ref skeltmp, ref sensor);
+            Drawing draw = new mainImageBoxDraw(ref skeltmp, ref sensor);
             DrivingHandInfo info = new DrivingHandInfo(ref sensor);
-            RawByteProcess byteprocess = new RawByteProcess();
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
             {
                 if (skeletonFrame != null)
@@ -272,98 +272,43 @@ namespace FesianXu.KinectGestureControl
                         angleBox.Text = "Angle = " + (float)Math.Round((double)info.Angle, 2) + "°";
                         angleRateBox.Text = "AngleRate = " + (float)Math.Round((double)info.AngleRate, 2) + "°";
                         // parameters update and showing
-                        System.Drawing.Rectangle lroi = info.getROI(HandsEnum.leftHand);
-                        System.Drawing.Rectangle rroi = info.getROI(HandsEnum.rightHand);
-                        byte[] lhand_p = byteprocess.mapColorImageROI(ref rawColorPixels, lroi);
-                        byte[] rhand_p = byteprocess.mapColorImageROI(ref rawColorPixels, rroi);
-                        BitmapSource lhand_bs = WriteableBitmap.Create(info.handWidth, info.handHeight,
-                            96, 96, PixelFormats.Bgr32, null, lhand_p, info.handWidth * 4);
-                        BitmapSource rhand_bs = WriteableBitmap.Create(info.handWidth, info.handHeight,
-                             96, 96, PixelFormats.Bgr32, null, rhand_p, info.handWidth * 4);
-
-                        ////////////// CNN for HandStatus recognition///////////////////////////////
-                        byte[] lhand_c3 = byteprocess.removeAlphaChannel(ref lhand_p);
-                        byte[] rhand_c3 = byteprocess.removeAlphaChannel(ref rhand_p);
-                        var lhand_runner = lhand_global_sess.GetRunner();
-                        var rhand_runner = rhand_global_sess.GetRunner();
-
-                        var lhand_tensor_g = new TFTensor(lhand_c3);
-                        var rhand_tensor_g = new TFTensor(rhand_c3);
-
-                        var lhand_tensor_m = new TFTensor[] { lhand_tensor_g };
-                        var rhand_tensor_m = new TFTensor[] { rhand_tensor_g };
-
-                        using (TFGraph local_graph = new TFGraph())
+                        try
                         {
-                            lhand_tensor = CreateTensorFromRawTensor(lhand_tensor_m, local_graph);
+                            System.Drawing.Rectangle lroi = info.getROI(HandsEnum.leftHand);
+                            System.Drawing.Rectangle rroi = info.getROI(HandsEnum.rightHand);
+                            byte[] lhand_p = byteprocess.mapColorImageROI(ref rawColorPixels, lroi);
+                            byte[] rhand_p = byteprocess.mapColorImageROI(ref rawColorPixels, rroi);
+                            BitmapSource lhand_bs = WriteableBitmap.Create(info.handWidth, info.handHeight,
+                                96, 96, PixelFormats.Bgr32, null, lhand_p, info.handWidth * 4);
+                            BitmapSource rhand_bs = WriteableBitmap.Create(info.handWidth, info.handHeight,
+                                 96, 96, PixelFormats.Bgr32, null, rhand_p, info.handWidth * 4);
+                            byte[] lhand_c3 = byteprocess.removeAlphaChannel(ref lhand_p);
+                            byte[] rhand_c3 = byteprocess.removeAlphaChannel(ref rhand_p);
+                            var p_l = recognizeHands(HandsEnum.leftHand, ref lhand_c3);
+                            if (p_l[0] == 1)
+                                LeftHandStatusBox.Text = "Left Hand is palm";
+                            else
+                                LeftHandStatusBox.Text = "Left Hand is fist";
+
+                            var p_r = recognizeHands(HandsEnum.rightHand, ref rhand_c3);
+                            if (p_r[0] == 1)
+                                RightHandStatusBox.Text = "Right Hand is palm";
+                            else
+                                RightHandStatusBox.Text = "Right Hand is fist";
+
+
+                            if (isShowColorHandsValue)
+                            {
+                                left_hand_color_box.Source = lhand_bs;
+                                right_hand_color_box.Source = rhand_bs;
+                            } // checkbox to select whether show the color hand
+                            HandsROIStatusBox.Text = "Hands Normal";
+
                         }
-                        using (TFGraph local_graph = new TFGraph())
+                        catch (ROIOutOfBoundsException excep)
                         {
-                            rhand_tensor = CreateTensorFromRawTensor(rhand_tensor_m, local_graph);
+                            HandsROIStatusBox.Text = "Hands OutOfBounds";
                         }
-
-                        lhand_runner.AddInput(lhand_global_graph["input"][0], lhand_tensor).
-                                   AddInput(lhand_global_graph["dropout"][0], 1.0f).
-                                   Fetch(lhand_global_graph["softmax_output"][0]);
-                        rhand_runner.AddInput(rhand_global_graph["input"][0], rhand_tensor).
-                                   AddInput(rhand_global_graph["dropout"][0], 1.0f).
-                                   Fetch(rhand_global_graph["softmax_output"][0]);
-
-
-                        TFTensor[] lhand_output;
-                        TFTensor[] rhand_output;
-
-
-                        if (isFirstToCNN)
-                        {
-                            this.sensor.AllFramesReady -= this.AllFrameReadyHandle;
-                            lhand_output = lhand_runner.Run();
-                            this.sensor.AllFramesReady += this.AllFrameReadyHandle;
-                            //isFirstToCNN = false;
-                        }
-                        else
-                        {
-                            lhand_output = lhand_runner.Run();
-                        }
-                        var result_l = lhand_output[0];
-                        var p = ((float[][])result_l.GetValue(jagged: true))[0];
-                        if (p[0] == 1)
-                            LeftHandStatusBox.Text = "Left Hand is palm";
-                        else
-                            LeftHandStatusBox.Text = "Left Hand is fist";
-                        //release and dispose
-                        lhand_tensor.Dispose(true);
-                        result_l.Dispose(true);
-                        lhand_output[0].Dispose(true);
-
-                        if (isFirstToCNN)
-                        {
-                            this.sensor.AllFramesReady -= this.AllFrameReadyHandle;
-                            rhand_output = rhand_runner.Run();
-                            this.sensor.AllFramesReady += this.AllFrameReadyHandle;
-                            isFirstToCNN = false;
-                        }
-                        else
-                        {
-                            rhand_output = rhand_runner.Run();
-                        }
-                        var result_r = rhand_output[0];
-                        p = ((float[][])result_r.GetValue(jagged: true))[0];
-                        if (p[0] == 1)
-                            RightHandStatusBox.Text = "Right Hand is palm";
-                        else
-                            RightHandStatusBox.Text = "Right Hand is fist";
-                        //release and dispose
-                        rhand_tensor.Dispose(true);
-                        result_r.Dispose(true);
-                        rhand_output[0].Dispose(true);
-
-                        if (isShowColorHandsValue)
-                        {
-                            left_hand_color_box.Source = lhand_bs;
-                            right_hand_color_box.Source = rhand_bs;
-                        } // checkbox to select whether show the color hand
-
 
                         // driving steering wheel
                         if (info.Radius < DrivingHandInfo.bothHandsRadius_threshold
@@ -406,7 +351,7 @@ namespace FesianXu.KinectGestureControl
         }
 
 
-        private static TFTensor CreateTensorFromRawTensor(TFTensor[] tensor_m, TFGraph graph, bool isFromFile = false)
+        private static TFTensor CreateTensorFromRawTensor(ref TFTensor[] tensor_m, TFGraph graph, bool isFromFile = false)
         {
 
             TFOutput input, output;

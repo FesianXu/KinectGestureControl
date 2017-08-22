@@ -1,29 +1,37 @@
-﻿using System;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/22
+// Description: the exception about the ROI is out of bounds
+// version: v1.0 
+// type: exception class
+//////////////////////////////////////////////////////////////////////////
 
 namespace FesianXu.KinectGestureControl
 {
+    using System;
+
     public class ROIOutOfBoundsException: ApplicationException
     {
-        private string error;
         private Exception innerException;
+        public bool ROIerror { get;}
+        public string Error { get; }
 
         public ROIOutOfBoundsException()
         {
+            ROIerror = true;
         }
 
         public ROIOutOfBoundsException(string msg) : base(msg)
         {
-            error = msg;
+            ROIerror = true;
+            Error = msg;
         }
 
         public ROIOutOfBoundsException(string msg, Exception innerException) : base(msg)
         {
             this.innerException = innerException;
-            this.error = msg;
+            Error = msg;
+            ROIerror = true;
         }
-
-        public string Error { get { return error; } }
-
-
     }
 }

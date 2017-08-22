@@ -1,8 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/22
+// Description: the kinect basic operators, all kinect related class should directly or indirectly 
+// inherit from it.
+// version: v1.0 
+// type: class
+//////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using Microsoft.Kinect;
 using System.Windows;
 
@@ -18,6 +24,14 @@ namespace FesianXu.KinectGestureControl
         protected int hands_size_height = 64;
         protected int hands_channels = 3;
 
+
+        /// <summary>
+        /// compute the angle of the steering wheel
+        /// </summary>
+        /// <param name="pos_left">left hand position</param>
+        /// <param name="pos_right">right hand position</param>
+        /// <param name="radius">the radius between both hands</param>
+        /// <returns></returns>
         protected double computeAngle(Point pos_left, Point pos_right, double radius)
         {
             double angle = 0;
@@ -34,12 +48,25 @@ namespace FesianXu.KinectGestureControl
 
         }
 
+
+        /// <summary>
+        /// the distance between both hands in 2D
+        /// </summary>
+        /// <param name="lh">left hand position</param>
+        /// <param name="rh">right hand position</param>
+        /// <returns></returns>
         protected double distance2d(Point lh, Point rh)
         {
             return Math.Sqrt(Math.Pow(lh.X - rh.X, 2) + Math.Pow(lh.Y - rh.Y, 2));
         }
 
 
+        /// <summary>
+        /// the distance between both hands in 3D
+        /// </summary>
+        /// <param name="lh">left hand position</param>
+        /// <param name="rh">right hand position</param>
+        /// <returns></returns>
         protected double distance3d(Joint lh, Joint rh)
         {
             double disX = lh.Position.X - rh.Position.X;
@@ -50,6 +77,11 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// the mean filter
+        /// </summary>
+        /// <param name="rawData">raw data</param>
+        /// <returns>the mean filted value</returns>
         protected double meanFilter(ref double[] rawData)
         {
             int len = rawData.Length;

@@ -56,12 +56,22 @@ namespace FesianXu.KinectGestureControl
 
         public DrivingHandInfo(ref KinectSensor sensor):base(ref sensor)
         {
+            this.sensor = sensor;
         }
 
+
+        /// <summary>
+        /// update the skeleton
+        /// </summary>
+        /// <param name="skeleton">the new skeleton</param>
         public void updateSkeleton(ref Skeleton skeleton) {
             skel = skeleton;
         }
 
+
+        /// <summary>
+        /// compute the key joints
+        /// </summary>
         public void computeKeyJoints()
         {
             jspine_shoulder = skel.Joints[JointType.ShoulderCenter];
@@ -71,6 +81,10 @@ namespace FesianXu.KinectGestureControl
             jright3d = skel.Joints[JointType.HandRight];
         }
 
+
+        /// <summary>
+        /// compute the key points and information
+        /// </summary>
         public void computeKeyPointsAndInfo()
         {
             dis2left = (int)(jwrist_left.Position.Z * 1000);
@@ -101,19 +115,68 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// get the ROI of hands
+        /// </summary>
+        /// <param name="whichHand">which hands' ROI</param>
+        /// <returns>the ROI</returns>
         public System.Drawing.Rectangle getROI(HandsEnum whichHand)
         {
             if (whichHand == HandsEnum.leftHand)
-                return new System.Drawing.Rectangle((int)jleft2d_color.X - hands_size_width / 2, (int)jleft2d_color.Y - hands_size_height / 2,
+            {
+                System.Drawing.Rectangle roi = new System.Drawing.Rectangle((int)jleft2d_color.X - hands_size_width / 2, (int)jleft2d_color.Y - hands_size_height / 2,
                                                    hands_size_width, hands_size_height);
+                if (isROIOutOfBounds(roi))
+                {
+                    var excep = new ROIOutOfBoundsException("ROI left hand area is out of the image's bounds!");
+                    throw excep;
+                }
+                return roi;
+            }
             else if (whichHand == HandsEnum.rightHand)
-                return new System.Drawing.Rectangle((int)jright2d_color.X - hands_size_width / 2, (int)jright2d_color.Y - hands_size_height / 2,
-                                   hands_size_width, hands_size_height);
+            {
+                System.Drawing.Rectangle roi = new System.Drawing.Rectangle((int)jright2d_color.X - hands_size_width / 2, (int)jright2d_color.Y - hands_size_height / 2,
+                                                   hands_size_width, hands_size_height);
+                if (isROIOutOfBounds(roi))
+                {
+                    var excep = new ROIOutOfBoundsException("ROI right hand area is out of the image's bounds!");
+                    throw excep;
+                }
+                return roi; 
+            } 
             else
+            {
                 return new System.Drawing.Rectangle();
+            }
+                
         }
 
 
+        /// <summary>
+        /// is ROI out of bounds?
+        /// </summary>
+        /// <param name="roi">the result</param>
+        /// <returns></returns>
+        private bool isROIOutOfBounds(System.Drawing.Rectangle roi)
+        {
+            int x = roi.X;
+            int y = roi.Y;
+            int width = roi.Width;
+            int height = roi.Height;
+            if (x < 0 || y < 0)
+                return true;
+            if (x + width > img_size_width)
+                return true;
+            if (y + height > img_size_height)
+                return true;
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// update the old datas
+        /// </summary>
         public void updateOldData()
         {
             old_jleft2d = jleft2d_color;
@@ -125,6 +188,7 @@ namespace FesianXu.KinectGestureControl
 
         }
 
+        //visitors
 
         public int handWidth { get { return hands_size_width; } }
         public int handHeight { get { return hands_size_height; } }

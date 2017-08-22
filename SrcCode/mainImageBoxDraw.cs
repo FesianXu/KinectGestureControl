@@ -2,7 +2,7 @@
 // Author: FesianXu
 // Date: 2017/8/21
 // Description: hand recognition interface for palm or fist recognition
-// version: v0.2 
+// version: v1.0
 // type: class, implement for interface
 //////////////////////////////////////////////////////////////////////////
 
@@ -56,9 +56,9 @@ namespace FesianXu.KinectGestureControl
 
 
         /// <summary>
-        /// 
+        /// add drawing context
         /// </summary>
-        /// <param name="dc"></param>
+        /// <param name="dc">the drawing context</param>
         public void addDrawingContext(ref DrawingContext dc)
         {
             drawingContext = dc;
@@ -66,9 +66,9 @@ namespace FesianXu.KinectGestureControl
 
 
         /// <summary>
-        /// 
+        /// update skeleton
         /// </summary>
-        /// <param name="skeleton"></param>
+        /// <param name="skeleton">the new skeleton</param>
         public void updateSkeleton(ref Skeleton skeleton)
         {
             skel = skeleton;
@@ -76,11 +76,11 @@ namespace FesianXu.KinectGestureControl
 
 
         /// <summary>
-        /// 
+        /// make the clip bounds to forbid to render out of canvas
         /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="thickness"></param>
+        /// <param name="width">the render width</param>
+        /// <param name="height">the render height</param>
+        /// <param name="thickness">the clip bounds render thickness</param>
         public void getRenderAndClipBounds(float width, float height, double thickness)
         {
             RenderWidth = width;
@@ -90,11 +90,11 @@ namespace FesianXu.KinectGestureControl
 
 
         /// <summary>
-        /// 
+        /// draw bone in the canvas
         /// </summary>
-        /// <param name="jointType0"></param>
-        /// <param name="jointType1"></param>
-        /// <param name="ftype"></param>
+        /// <param name="jointType0">the first joint</param>
+        /// <param name="jointType1">the second joint</param>
+        /// <param name="ftype">drawing 3D->2D mapping type</param>
         private void drawBoneInImage(JointType jointType0,
             JointType jointType1,
             ImageFrameTypes ftype = ImageFrameTypes.ColorFrame)
@@ -133,9 +133,9 @@ namespace FesianXu.KinectGestureControl
 
 
         /// <summary>
-        /// 
+        /// draw bones and joints, make a matchstick men
         /// </summary>
-        /// <param name="ftype"></param>
+        /// <param name="ftype">drawing 3D->2D mapping type</param>
         private void drawBonesAndJoints(ImageFrameTypes ftype = ImageFrameTypes.ColorFrame)
         {
             // Render Torso
@@ -194,9 +194,9 @@ namespace FesianXu.KinectGestureControl
         }
 
         /// <summary>
-        /// 
+        /// drawing ellipse
         /// </summary>
-        /// <param name="ftype"></param>
+        /// <param name="ftype">drawing 3D->2D mapping type</param>
         private void drawEllipse(ImageFrameTypes ftype = ImageFrameTypes.ColorFrame)
         {
             if (ftype == ImageFrameTypes.ColorFrame)
@@ -213,12 +213,13 @@ namespace FesianXu.KinectGestureControl
                     BodyCenterThickness);
         }
 
+
         /// <summary>
         /// Draws indicators to show which edges are clipping skeleton data
         /// </summary>
-        /// <param name="RenderWidth"></param>
-        /// <param name="RenderHeight"></param>
-        /// <param name="ClipBoundsThickness"></param>
+        /// <param name="RenderWidth">the render width</param>
+        /// <param name="RenderHeight">the render height</param>
+        /// <param name="ClipBoundsThickness">the thickness of the clip bounds</param>
         private void RenderClippedEdges()
         {
             if (skel.ClippedEdges.HasFlag(FrameEdges.Bottom))
@@ -255,14 +256,19 @@ namespace FesianXu.KinectGestureControl
         }
 
 
-
+        /// <summary>
+        /// drawing the canvas background
+        /// </summary>
         public void drawBackgraoud()
         {
             drawingContext.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
         }
 
 
-
+        /// <summary>
+        /// drawing the matchstick men in the canvas
+        /// </summary>
+        /// <param name="skeleton">the skeleton needed to be drawn</param>
         public void drawMatchStickMen(ref Skeleton skeleton)
         {
             updateSkeleton(ref skeleton);
@@ -280,6 +286,11 @@ namespace FesianXu.KinectGestureControl
 
 
 
+        /// <summary>
+        /// drawing the steering wheel on the canvas
+        /// </summary>
+        /// <param name="lh">the left hand position</param>
+        /// <param name="rh">the right hand position</param>
         public void drawSteeringWheel(Point lh, Point rh)
         {
             Point pos_center2d = new Point((lh.X + rh.X) / 2, (lh.Y + rh.Y) / 2);
@@ -297,6 +308,12 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// drawing single hand holding steering wheel
+        /// </summary>
+        /// <param name="shand">the single hand position</param>
+        /// <param name="center2d">the center2d position last time</param>
+        /// <param name="whichHand">which hand in holding</param>
         public void drawSingleHandInWheel(Point shand, Point center2d, HandsEnum whichHand)
         {
             double radius = distance2d(shand, center2d);
@@ -327,10 +344,6 @@ namespace FesianXu.KinectGestureControl
                     );
             }
         }
-
-
-
-
 
     }
 }

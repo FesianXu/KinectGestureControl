@@ -2,7 +2,7 @@
 // Author: FesianXu
 // Date: 2017/8/21
 // Description: To map the raw byte stream to a Image or byte with ROI(Region of Interest).
-// version: v0.2 
+// version: v1.0
 // type: interface & class
 //////////////////////////////////////////////////////////////////////////
 
@@ -45,6 +45,13 @@ namespace FesianXu.KinectGestureControl
 
     class RawByteProcess: KinectBasicOperator, RawByteMapping
     {
+        /// <summary>
+        /// mapping the specific ROI of a color image byte stream   
+        /// </summary>
+        /// <param name="raw">raw color image stream</param>
+        /// <param name="roi">the roi area</param>
+        /// <param name="channels">the channel of the raw image, normally set to 4 with BGR and alpha</param>
+        /// <returns></returns>
         public byte[] mapColorImageROI(ref byte[] raw, Rectangle roi, int channels = 4)
         {
             int roix = roi.X;
@@ -65,6 +72,15 @@ namespace FesianXu.KinectGestureControl
             return img;
         }
 
+
+        /// <summary>
+        /// mapping the specific ROI of a depth image byte stream   
+        /// </summary>
+        /// <param name="raw">raw depth image stream</param>
+        /// <param name="roi">the roi area</param>
+        /// <param name="lthresh">the left hand threshold</param>
+        /// <param name="rthresh">the right hand threshold</param>
+        /// <returns></returns>
         public byte[] mapDepthImageROI(ref byte[] raw, Rectangle roi, int lthresh, int rthresh)
         {
             int roix = roi.X;
@@ -95,6 +111,11 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// remove the alpha channel in the 4-channel images
+        /// </summary>
+        /// <param name="bgra">the raw image byte stream with bgra channels</param>
+        /// <returns></returns>
         public byte[] removeAlphaChannel(ref byte[] bgra)
         {
             byte[] bgr = new byte[hands_size_width * hands_size_height * hands_channels];

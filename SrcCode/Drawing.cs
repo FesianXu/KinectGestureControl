@@ -3,7 +3,7 @@
 // Date: 2017/8/21
 // Description: The interface for drawing in the mainImageBox, mainly include the steeringDrawing, 
 // matchstick men drawing and skeleton's joints drawing.
-// version: v0.2 
+// version: v1.0
 // type: interface
 //////////////////////////////////////////////////////////////////////////
 
@@ -13,6 +13,7 @@ namespace FesianXu.KinectGestureControl
 {
     using System.Windows;
     using Microsoft.Kinect;
+    using System.Windows.Media;
 
     enum HandsEnum { leftHand, rightHand, bothHand, NoHand};
 
@@ -46,6 +47,25 @@ namespace FesianXu.KinectGestureControl
         void drawSingleHandInWheel(Point shand, Point center2d, HandsEnum whichHand);
 
 
+        /// <summary>
+        /// add the drawing context, it should be reference or it will alway refresh
+        /// </summary>
+        /// <param name="dc">the drawing context</param>
+        void addDrawingContext(ref DrawingContext dc);
+
+        /// <summary>
+        /// make the clip bounds to forbid to render out of canvas
+        /// </summary>
+        /// <param name="width">the render width</param>
+        /// <param name="height">the render height</param>
+        /// <param name="thickness">the clip bounds render thickness</param>
+        void getRenderAndClipBounds(float width, float height, double thickness);
+
+        /// <summary>
+        /// update the skeleton
+        /// </summary>
+        /// <param name="skeleton">the new skeleton</param>
+        void updateSkeleton(ref Skeleton skeleton);
 
     }
 }
