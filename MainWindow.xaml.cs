@@ -187,8 +187,13 @@ namespace FesianXu.KinectGestureControl
                     {
                         SerialPortNameBox.Items.Insert(portNames.IndexOf(name), name);
                     }
-
-
+                    // read the history serial setting
+                    if (comm.readSerialHistorySetting())
+                    {
+                        comm.useHistorySetting();
+                        SerialPortNameBox.Text = comm.portNameInUsed;
+                        SerialBaudRateBox.Text = comm.baudInUsed.ToString() + " bps";
+                    }
                 }
                 catch (IOException)
                 {
@@ -214,6 +219,8 @@ namespace FesianXu.KinectGestureControl
                 this.sensor.Stop();
                 lhand_global_sess.Dispose(true);
                 rhand_global_sess.Dispose(true);
+                if (comm.PortStatus == SerialPortStatusEnum.Opened)
+                    comm.close();
             }
         }
 

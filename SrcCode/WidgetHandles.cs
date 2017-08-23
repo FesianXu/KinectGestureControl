@@ -10,6 +10,9 @@ namespace FesianXu.KinectGestureControl
 {
     partial class MainWindow
     {
+
+        private string SerialInfoBox_TextFormat = "SerialPortInfo:";
+
         /// <summary>
         /// Handles the checking or unchecking of the seated mode combo box
         /// </summary>
@@ -59,7 +62,21 @@ namespace FesianXu.KinectGestureControl
                     if (comm.openPort())
                     {
                         OpenPort.Content = "Close Port";
-                    }      
+                        SerialInfoBox.Text = SerialInfoBox_TextFormat + "Port Open Success!";
+                        if (comm.isUsedHistoryParams == false)
+                        {
+                            comm.createSerialHistorySetting();
+                        }
+                    }
+                    else
+                    {
+                        // open fail as the port has been opened by other process yet
+                        SerialInfoBox.Text = SerialInfoBox_TextFormat + "Open failed! some process have been opened it yet";
+                    }
+                }
+                else
+                {
+                    SerialInfoBox.Text = SerialInfoBox_TextFormat + "Please select the port name and baud rate!";
                 }
             }
             else if (comm.PortStatus == SerialPortStatusEnum.Opened)
@@ -68,10 +85,9 @@ namespace FesianXu.KinectGestureControl
                 {
                     comm.close();
                     OpenPort.Content = "Open Port";
+                    SerialInfoBox.Text = SerialInfoBox_TextFormat + "Port Close!";
                 }
             }
-            
-
         }
 
 
@@ -80,6 +96,7 @@ namespace FesianXu.KinectGestureControl
             int ind = SerialPortNameBox.SelectedIndex;
             comm.portNameInUsed = comm.AvailableSerialPortNames[ind];
             comm.isPortNameSetted = true;
+            comm.isUsedHistoryParams = false;
         }
 
         private void SerialBaudRateBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -87,6 +104,7 @@ namespace FesianXu.KinectGestureControl
             int ind = SerialBaudRateBox.SelectedIndex;
             comm.baudInUsed = comm.AvailableBaudRates[ind];
             comm.isPortBaudRateSetted = true;
+            comm.isUsedHistoryParams = false;
         }
     }
 }

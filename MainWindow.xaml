@@ -126,7 +126,8 @@
 
         <Button x:Name="OpenPort" Content="Open Port" HorizontalAlignment="Left" Margin="831,410,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="OpenPort_Click"/>
         
-
+        <!--the text block to show the infomation about serial port-->
+        <TextBlock x:Name="SerialInfoBox" HorizontalAlignment="Left" Margin="528,445,0,0" Grid.Row="1" TextWrapping="Wrap" Text="SerialPortInfo:" VerticalAlignment="Top" Width="446" Height="49" FontSize="15px"/>
 
 
 
