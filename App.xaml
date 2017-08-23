@@ -1,7 +1,7 @@
-﻿<Application x:Class="kinect_gesture_control.App"
+﻿<Application x:Class="FesianXu.KinectGestureControl.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:kinect_gesture_control"
+             xmlns:local="clr-namespace:FesianXu.KinectGestureControl"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

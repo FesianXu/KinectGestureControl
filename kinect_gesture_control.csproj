@@ -96,6 +96,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SrcCode\Communicater.cs" />
     <Compile Include="SrcCode\Drawing.cs" />
     <Compile Include="SrcCode\DrivingHandInfo.cs" />
     <Compile Include="SrcCode\HandRecognition.cs" />
@@ -103,7 +104,9 @@
     <Compile Include="SrcCode\mainImageBoxDraw.cs" />
     <Compile Include="SrcCode\MyException.cs" />
     <Compile Include="SrcCode\RawByteMapping.cs" />
+    <Compile Include="SrcCode\SerialCommunicater.cs" />
     <Compile Include="SrcCode\SkeletonShow.cs" />
+    <Compile Include="SrcCode\WidgetHandles.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

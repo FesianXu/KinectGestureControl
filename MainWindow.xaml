@@ -75,7 +75,7 @@
                 <TextBlock Name="statusBarText" Margin="-1 0 0 0">Click 'Seated' to change skeletal pipeline type!</TextBlock>
             </StatusBarItem>
         </StatusBar>
-        <TextBlock x:Name="AuthorName" HorizontalAlignment="Left" Margin="86,10,0,0" TextWrapping="Wrap" Text="Author: FesianXu" VerticalAlignment="Top" Height="37" Width="128" FontSize="15px"/>
+        <TextBlock x:Name="AuthorName" HorizontalAlignment="Left" Margin="86,10,0,0" TextWrapping="Wrap" Text="Author: FesianXu  Version 1.0" VerticalAlignment="Top" Height="37" Width="128" FontSize="15px"/>
         <!--color hands frame-->
         <Image x:Name="left_hand_color_box" HorizontalAlignment="Left" Height="128" Margin="86,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128" />
         <Border Name="left_hand_color_border"  BorderBrush="Red" BorderThickness="2" HorizontalAlignment="Left" Height="128" Margin="86,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="128"/>
@@ -112,7 +112,20 @@
         <TextBlock x:Name="TotalCostTimeBox" HorizontalAlignment="Left" Margin="232,406,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Total Cost Time = ?" VerticalAlignment="Top" FontSize="20px"/>
         <TextBlock x:Name="HandsROIStatusBox" HorizontalAlignment="Left" Margin="232,437,0,0" Grid.Row="1" TextWrapping="Wrap" Text="The status of hands is ?" VerticalAlignment="Top" FontSize="20px"/>
 
+       
+        <!--serial port area-->
+        <ComboBox x:Name="SerialPortNameBox" HorizontalAlignment="Left" Margin="528,410,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120" SelectionChanged="SerialPortNameBox_SelectionChanged">
+            
+        </ComboBox>
+        
+        <ComboBox x:Name="SerialBaudRateBox" HorizontalAlignment="Left" Margin="675,410,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120" SelectionChanged="SerialBaudRateBox_SelectionChanged">
+            <ComboBoxItem Name="Baud9600bps">9600 bps</ComboBoxItem>
+            <ComboBoxItem Name="Baud19200bps">19200 bps</ComboBoxItem>
+            <ComboBoxItem Name="Baud115200bps">115200 bps</ComboBoxItem>
+        </ComboBox>
 
+        <Button x:Name="OpenPort" Content="Open Port" HorizontalAlignment="Left" Margin="831,410,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="OpenPort_Click"/>
+        
 
 
 

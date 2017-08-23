@@ -118,6 +118,9 @@ namespace FesianXu.KinectGestureControl
         private RawByteMapping byteprocess = new RawByteProcess();
 
 
+        // serial port initiation
+        private SerialCommunicater comm = new SerialCommunicater();
+
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
@@ -177,6 +180,15 @@ namespace FesianXu.KinectGestureControl
                     rhand_global_graph.Import(rhand_cnn_model, "");
                     lhand_global_sess = new TFSession(lhand_global_graph);
                     rhand_global_sess = new TFSession(rhand_global_graph);
+
+                    // get the available serial port names and update the box list
+                    var portNames = comm.AvailableSerialPortNames;
+                    foreach (var name in portNames)
+                    {
+                        SerialPortNameBox.Items.Insert(portNames.IndexOf(name), name);
+                    }
+
+
                 }
                 catch (IOException)
                 {
@@ -376,45 +388,5 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
-
-        /// <summary>
-        /// Handles the checking or unchecking of the seated mode combo box
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void CheckBoxSeatedModeChanged(object sender, RoutedEventArgs e)
-        {
-            if (null != this.sensor)
-            {
-                if (this.checkBoxSeatedMode.IsChecked.GetValueOrDefault())
-                {
-                    this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
-                }
-                else
-                {
-                    this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
-                }
-            }
-        }
-
-        private void backgroundInMainWindow_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void isShowColorHands_Checked(object sender, RoutedEventArgs e)
-        {
-            if (null != this.sensor)
-            {
-                if (this.isShowColorHands.IsChecked.GetValueOrDefault())
-                {
-                    isShowColorHandsValue = true;
-                }
-                else
-                {
-                    isShowColorHandsValue = false;
-                }
-            }
-        }
     }
 }
