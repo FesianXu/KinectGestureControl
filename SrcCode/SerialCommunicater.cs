@@ -30,20 +30,17 @@ namespace FesianXu.KinectGestureControl
         private List<string> availableSerialPortNameList = new List<string> { };
         private SerialPortStatusEnum portStatus;
         private string historyParamsSavePath = @"../../Setting/SerialPortHistorySetting.ini";
+        private string serialMessagesRecordsFolderPath = @"../../Records/SerialMessagesRecords/";
 
         private static string historySerialPortNameFormat = @"<SerialPortName>=";
         private static string historySerialBaudRateFormat = @"<SerialPortBaudRate>=";
         private static string historySerialSettingTimeFormat = @"<SettingTime>=";
         private static string NewLineFormat = "\r\n";
 
+        private byte[] receive_buf;
+
         private SerialHistoryParameters historyParams;
-        public bool isUsedHistoryParams;
-
-        public void send(string str)
-        {
-            sp.Write(str);
-        }
-
+        
         public SerialCommunicater()
         {
             string[] portName = SerialPort.GetPortNames();
@@ -69,7 +66,7 @@ namespace FesianXu.KinectGestureControl
             sp.Encoding = System.Text.Encoding.GetEncoding("GB2312");
             sp.ReceivedBytesThreshold = 1;
             sp.Parity = Parity.None;
-            sp.DataReceived += sp_DataReceived; // binding the recieve handle
+            sp.DataReceived += sp_DataReceived; // binding the receive handle
             try
             {
                 sp.Open();
@@ -87,10 +84,13 @@ namespace FesianXu.KinectGestureControl
         /// <summary>
         /// close the serial port
         /// </summary>
-        public void close()
+        public void closePort()
         {
-            portStatus = SerialPortStatusEnum.Closed;
-            sp.Close();
+            if (PortStatus == SerialPortStatusEnum.Opened)
+            {
+                portStatus = SerialPortStatusEnum.Closed;
+                sp.Close();
+            }
         }
 
 
@@ -144,6 +144,9 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// create the new serial port history parameters setting
+        /// </summary>
         public void createSerialHistorySetting()
         {
             FileStream file = new FileStream(historyParamsSavePath, FileMode.Create, FileAccess.Write);
@@ -159,16 +162,52 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// use the history setting
+        /// </summary>
         public void useHistorySetting()
         {
             portNameInUsed = historyParams.serialPortName;
             baudInUsed = historyParams.serialBaudRate;
-            isUsedHistoryParams = true;
+            IsUsedHistoryParams = true;
         }
 
 
+        /// <summary>
+        /// write raw string and add a new line
+        /// </summary>
+        /// <param name="str"></param>
+        public void writeLines(string str)
+        {
+            if (PortStatus == SerialPortStatusEnum.Opened)
+            {
+                sp.Write(str);
+                sp.Write("\r\n");
+            }
+        }
+
+        public void write(string str)
+        {
+            if (PortStatus == SerialPortStatusEnum.Opened)
+            {
+                sp.Write(str);
+            }
+        }
+
 
         private void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            int len = sp.BytesToRead;
+            receive_buf = new byte[len];
+            sp.Read(receive_buf, 0, len);
+            //var data2chars = Encoding.ASCII.GetChars(receive_buf);
+        }
+
+
+        /// <summary>
+        /// record the serial messages
+        /// </summary>
+        private void serialMessagesRecorder()
         {
 
         }
@@ -183,6 +222,9 @@ namespace FesianXu.KinectGestureControl
         public bool isPortNameSetted { get; set; }
         public bool isPortBaudRateSetted { get; set; }
         public SerialPortStatusEnum PortStatus { get { return portStatus; } }
+        public bool IsRecordSerialMessages { get; set; }
+        public bool IsUsedHistoryParams { get; set; }
 
+        public byte[] ReceiveBuf { get { return receive_buf; } }
     }
 }

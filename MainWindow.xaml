@@ -1,9 +1,10 @@
 ﻿<Window x:Class="FesianXu.KinectGestureControl.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Kinect Gesture Control Demo" Height="735" Width="1012" Loaded="WindowLoaded" Closing="WindowClosing">
+        Title="Kinect Gesture Control Demo" Height="800" Width="1200" MaxWidth="1024" MaxHeight="800"  Loaded="WindowLoaded" Closing="WindowClosing">
+    <!--forbid to stretch the windows-->
 
-    <Window.Resources>
+ <Window.Resources>
         <SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e"/>
         <SolidColorBrush x:Key="KinectPurpleBrush" Color="#ff52318f"/>
         <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2"/>
@@ -127,7 +128,9 @@
         <Button x:Name="OpenPort" Content="Open Port" HorizontalAlignment="Left" Margin="831,410,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="OpenPort_Click"/>
         
         <!--the text block to show the infomation about serial port-->
-        <TextBlock x:Name="SerialInfoBox" HorizontalAlignment="Left" Margin="528,445,0,0" Grid.Row="1" TextWrapping="Wrap" Text="SerialPortInfo:" VerticalAlignment="Top" Width="446" Height="49" FontSize="15px"/>
+        <TextBlock x:Name="SerialInfoBox" HorizontalAlignment="Left" Margin="528,437,0,0" Grid.Row="1" TextWrapping="Wrap" Text="SerialPortInfo:" VerticalAlignment="Top" Width="446" Height="40" FontSize="15px"/>
+        <CheckBox x:Name="ClickToRecordSerialPort" Content="Click to record serial messages" HorizontalAlignment="Left" Margin="528,540,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="ClickToRecordSerialPort_Checked" Unchecked="ClickToRecordSerialPort_Checked"/>
+        <TextBlock x:Name="serialReceiveDataBox" HorizontalAlignment="Left" Margin="528,492,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Receive : " VerticalAlignment="Top" Width="446" Height="43" FontSize="15px"/>
 
 
 

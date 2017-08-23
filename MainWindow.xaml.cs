@@ -119,113 +119,12 @@ namespace FesianXu.KinectGestureControl
 
 
         // serial port initiation
-        private SerialCommunicater comm = new SerialCommunicater();
+        private Communicater comm = new SerialCommunicater();
 
-        /// <summary>
-        /// Initializes a new instance of the MainWindow class.
-        /// </summary>
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        // driving control
+        private DrivingControl drvctl = new DrivingControl();
 
-
-        /// <summary>
-        /// Execute startup tasks
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void WindowLoaded(object sender, RoutedEventArgs e)
-        {
-            // Create the drawing group we'll use for drawing
-            this.drawingGroup = new DrawingGroup();
-
-            // Create an image source that we can use in our image control
-            this.imageSource = new DrawingImage(this.drawingGroup);
-
-            // Display the drawing using our image control
-            mainImageShow.Source = this.imageSource;
-
-            foreach (var potentialSensor in KinectSensor.KinectSensors)
-            {
-                if (potentialSensor.Status == KinectStatus.Connected)
-                {
-                    this.sensor = potentialSensor;
-                    break;
-                }
-            }
-
-            if (null != this.sensor)
-            {
-                // Turn on the skeleton stream to receive skeleton frames
-                this.sensor.SkeletonStream.Enable();
-                this.sensor.ColorStream.Enable();
-                this.sensor.DepthStream.Enable();
-
-                // Add an event handler to be called whenever there is new color frame data
-                this.sensor.AllFramesReady += this.AllFrameReadyHandle;
-
-                // Start the sensor!
-                try
-                {
-                    this.sensor.Start();
-                    this.sensor.ElevationAngle = 6;
-                    // load CNN models and initiation
-                    lhand_global_graph = new TFGraph();
-                    rhand_global_graph = new TFGraph();
-
-                    lhand_cnn_model = File.ReadAllBytes(lhand_pb_model_path);
-                    rhand_cnn_model = File.ReadAllBytes(rhand_pb_model_path);
-                    lhand_global_graph.Import(lhand_cnn_model, "");
-                    rhand_global_graph.Import(rhand_cnn_model, "");
-                    lhand_global_sess = new TFSession(lhand_global_graph);
-                    rhand_global_sess = new TFSession(rhand_global_graph);
-
-                    // get the available serial port names and update the box list
-                    var portNames = comm.AvailableSerialPortNames;
-                    foreach (var name in portNames)
-                    {
-                        SerialPortNameBox.Items.Insert(portNames.IndexOf(name), name);
-                    }
-                    // read the history serial setting
-                    if (comm.readSerialHistorySetting())
-                    {
-                        comm.useHistorySetting();
-                        SerialPortNameBox.Text = comm.portNameInUsed;
-                        SerialBaudRateBox.Text = comm.baudInUsed.ToString() + " bps";
-                    }
-                }
-                catch (IOException)
-                {
-                    this.sensor = null;
-                }
-            }
-
-            if (null == this.sensor)
-            {
-                this.statusBarText.Text = Properties.Resources.NoKinectReady;
-            }
-        }
-
-        /// <summary>
-        /// Execute shutdown tasks
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (null != this.sensor)
-            {
-                this.sensor.Stop();
-                lhand_global_sess.Dispose(true);
-                rhand_global_sess.Dispose(true);
-                if (comm.PortStatus == SerialPortStatusEnum.Opened)
-                    comm.close();
-            }
-        }
-
-
-        
+    
         /// <summary>
         /// Event handler for Kinect sensor's SkeletonFrameReady event
         /// </summary>
@@ -238,6 +137,7 @@ namespace FesianXu.KinectGestureControl
             Skeleton[] skeletons = new Skeleton[0];
             Drawing draw = new mainImageBoxDraw(ref skeltmp, ref sensor);
             DrivingHandInfo info = new DrivingHandInfo(ref sensor);
+            drvctl.updateCommunicater(ref comm);
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
             {
                 if (skeletonFrame != null)
@@ -323,7 +223,7 @@ namespace FesianXu.KinectGestureControl
                             } // checkbox to select whether show the color hand
                             HandsROIStatusBox.Text = "Hands Normal";
 
-                        }
+                        } // try to not ROI out of bounds
                         catch (ROIOutOfBoundsException excep)
                         {
                             HandsROIStatusBox.Text = "Hands OutOfBounds";
@@ -352,17 +252,31 @@ namespace FesianXu.KinectGestureControl
                                 draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
                             }
                         }
+
+                        //communication with the slaver
+                        if (comm.PortStatus == SerialPortStatusEnum.Opened)
+                        {
+                            comm.writeLines("test");
+                            var buf = comm.ReceiveBuf;
+                            if (buf != null)
+                            {
+                                var data2chars = System.Text.Encoding.ASCII.GetChars(buf);
+                                string ss = new string(data2chars);
+                                serialReceiveDataBox.Text = ss;
+                            }
+                            
+                        }
+                        
+
                         ////////////////////////////////////////////////////////////////////////////
                     }
                 }
             }
 
-
             // prevent drawing outside of our render area
             this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
             dc.Close();
-
-
+            // calculate the costing time
             DateTime total_after = System.DateTime.Now;
             TimeSpan total_ts = total_after.Subtract(total_before);
             double total_tf = total_ts.TotalMilliseconds;
@@ -370,30 +284,8 @@ namespace FesianXu.KinectGestureControl
         }
 
 
-        private static TFTensor CreateTensorFromRawTensor(ref TFTensor[] tensor_m, TFGraph graph, bool isFromFile = false)
-        {
 
-            TFOutput input, output;
-            if (isFromFile)
-                input = graph.Placeholder(TFDataType.String);
-            else
-                input = graph.Placeholder(TFDataType.UInt8);
-            if (isFromFile)
-                output = graph.Cast(graph.DecodePng(contents: input, channels: 3), DstT: TFDataType.Float);
-            else
-                output = graph.Cast(x: input, DstT: TFDataType.Float);
-            output = graph.ExpandDims(input: output, dim: graph.Const(0));
 
-            using (var sess = new TFSession(graph))
-            {
-                var nor = sess.Run(
-                    inputs: new[] { input },
-                    inputValues: tensor_m,
-                    outputs: new[] { output }
-                    );
-                return nor[0];
-            }
-        }
 
     }
 }

@@ -38,6 +38,12 @@ namespace FesianXu.KinectGestureControl
 
         }
 
+
+        /// <summary>
+        /// whether show the color hands or not
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void isShowColorHands_Checked(object sender, RoutedEventArgs e)
         {
             if (null != this.sensor)
@@ -53,6 +59,12 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
+
+        /// <summary>
+        /// open serial port click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OpenPort_Click(object sender, RoutedEventArgs e)
         {
             if (comm.PortStatus == SerialPortStatusEnum.Closed)
@@ -63,7 +75,7 @@ namespace FesianXu.KinectGestureControl
                     {
                         OpenPort.Content = "Close Port";
                         SerialInfoBox.Text = SerialInfoBox_TextFormat + "Port Open Success!";
-                        if (comm.isUsedHistoryParams == false)
+                        if (comm.IsUsedHistoryParams == false)
                         {
                             comm.createSerialHistorySetting();
                         }
@@ -83,7 +95,7 @@ namespace FesianXu.KinectGestureControl
             {
                 if (comm.isPortBaudRateSetted && comm.isPortNameSetted)
                 {
-                    comm.close();
+                    comm.closePort();
                     OpenPort.Content = "Open Port";
                     SerialInfoBox.Text = SerialInfoBox_TextFormat + "Port Close!";
                 }
@@ -91,20 +103,50 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// comboBox, to select the serial port names
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SerialPortNameBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             int ind = SerialPortNameBox.SelectedIndex;
             comm.portNameInUsed = comm.AvailableSerialPortNames[ind];
             comm.isPortNameSetted = true;
-            comm.isUsedHistoryParams = false;
+            comm.IsUsedHistoryParams = false;
         }
 
+
+        /// <summary>
+        /// comboBox, to select the serial port's baud rates
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SerialBaudRateBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             int ind = SerialBaudRateBox.SelectedIndex;
             comm.baudInUsed = comm.AvailableBaudRates[ind];
             comm.isPortBaudRateSetted = true;
-            comm.isUsedHistoryParams = false;
+            comm.IsUsedHistoryParams = false;
+        }
+
+
+        /// <summary>
+        /// click to select whether record the serial port sending and receiving 
+        /// messages or not
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClickToRecordSerialPort_Checked(object sender, RoutedEventArgs e)
+        {
+            if (this.ClickToRecordSerialPort.IsChecked.GetValueOrDefault())
+            {
+                comm.IsRecordSerialMessages = true;
+            }
+            else
+            {
+                comm.IsRecordSerialMessages = false;
+            }
         }
     }
 }

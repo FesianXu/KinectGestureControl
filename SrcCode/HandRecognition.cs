@@ -101,5 +101,35 @@ namespace FesianXu.KinectGestureControl
             return new float[] { 0, 0 };
 
         }
+
+
+        private static TFTensor CreateTensorFromRawTensor(ref TFTensor[] tensor_m, TFGraph graph, bool isFromFile = false)
+        {
+
+            TFOutput input, output;
+            if (isFromFile)
+                input = graph.Placeholder(TFDataType.String);
+            else
+                input = graph.Placeholder(TFDataType.UInt8);
+            if (isFromFile)
+                output = graph.Cast(graph.DecodePng(contents: input, channels: 3), DstT: TFDataType.Float);
+            else
+                output = graph.Cast(x: input, DstT: TFDataType.Float);
+            output = graph.ExpandDims(input: output, dim: graph.Const(0));
+
+            using (var sess = new TFSession(graph))
+            {
+                var nor = sess.Run(
+                    inputs: new[] { input },
+                    inputValues: tensor_m,
+                    outputs: new[] { output }
+                    );
+                return nor[0];
+            }
+        }
+
+
+
+
     }
 }
