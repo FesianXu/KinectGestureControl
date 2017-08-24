@@ -160,6 +160,7 @@ namespace FesianXu.KinectGestureControl
             if (this.useVoiceAssistant.IsChecked.GetValueOrDefault())
             {
                 assistant.IsUsedVoiceAssistant = true;
+                //initVoiceAssistantThread(); // initiate and start the VA thread
                 assistant.playHello();
             }
             else

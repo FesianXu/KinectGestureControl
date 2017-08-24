@@ -268,8 +268,20 @@ namespace FesianXu.KinectGestureControl
                             }
                             
                         }
-                        
 
+                        if (voiceReg.RecognizedResultSemantic == "Chris" && voiceReg.regStatus == SpeechRecognizeStatusEnum.Recognized)
+                        {
+                            assistant.playYes();
+                            voiceReg.regStatus = SpeechRecognizeStatusEnum.Rejected;
+                        }
+
+                        if (voiceReg.RecognizedResultSemantic == "LEFT" && voiceReg.regStatus == SpeechRecognizeStatusEnum.Recognized)
+                        {
+                            assistant.playWhatUp();
+                            voiceReg.regStatus = SpeechRecognizeStatusEnum.Rejected;
+                        }
+
+                        regResult.Text = voiceReg.RecognizedResult;
                         ////////////////////////////////////////////////////////////////////////////
                     }
                 }

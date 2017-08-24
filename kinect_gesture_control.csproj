@@ -66,6 +66,10 @@
       <HintPath>D:\Emgu\emgucv-windesktop 3.2.0.2682\bin\Emgu.CV.World.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Kinect, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Speech, Version=11.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.Speech\11.0.0.0__31bf3856ad364e35\Microsoft.Speech.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -112,6 +116,7 @@
     <Compile Include="SrcCode\SerialCommunicater.cs" />
     <Compile Include="SrcCode\SkeletonShow.cs" />
     <Compile Include="SrcCode\WidgetHandles.cs" />
+    <Compile Include="VoiceAssistantThread.cs" />
     <Compile Include="VoiceAssistant\Chris.cs" />
     <Compile Include="VoiceAssistant\KinectVoiceRecognition.cs" />
     <Compile Include="VoiceAssistant\VoiceAssistant.cs" />
@@ -153,6 +158,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="ReadMe.md" />
+    <None Include="Resources\models\lhand_cnn_models.pb" />
+    <None Include="Resources\models\rhand_cnn_models.pb" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -172,6 +180,36 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SpeechGrammars\SpeechGrammar.xml">
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
+    <Content Include="Resources\voices\response_as_you_want_master.wav" />
+    <Content Include="Resources\voices\response_authorization_accomplish.wav" />
+    <Content Include="Resources\voices\response_authorization_failed.wav" />
+    <Content Include="Resources\voices\response_danger.wav" />
+    <Content Include="Resources\voices\response_guest.wav" />
+    <Content Include="Resources\voices\response_identifying.wav" />
+    <Content Include="Resources\voices\response_kinect_closing.wav" />
+    <Content Include="Resources\voices\response_master.wav" />
+    <Content Include="Resources\voices\response_negative.wav" />
+    <Content Include="Resources\voices\response_operation_failed.wav" />
+    <Content Include="Resources\voices\response_refuse.wav" />
+    <Content Include="Resources\voices\response_see_you_next_time.wav" />
+    <Content Include="Resources\voices\response_voice_assistant.wav" />
+    <Content Include="Resources\voices\response_wait.wav" />
+    <Content Include="Resources\voices\response_warning.wav" />
+    <Content Include="Resources\voices\response_welcome.wav" />
+    <Content Include="Resources\voices\response_what_up.wav" />
+    <Content Include="Resources\voices\response_yes_question.wav" />
+    <Content Include="Resources\voices\response_your_identity_is.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Records\SerialMessagesRecords\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\TensorFlowSharp.1.2.2\build\TensorFlowSharp.targets" Condition="Exists('..\packages\TensorFlowSharp.1.2.2\build\TensorFlowSharp.targets')" />

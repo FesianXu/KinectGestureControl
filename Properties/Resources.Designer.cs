@@ -79,5 +79,7 @@ namespace FesianXu.KinectGestureControl.Properties
                 return ResourceManager.GetString("NoKinectReady", resourceCulture);
             }
         }
+
+ 
     }
 }

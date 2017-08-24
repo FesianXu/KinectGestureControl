@@ -1,0 +1,45 @@
+﻿<!--Speech Grammar files-->
+<grammar version="1.0" xml:lang="en-US" root="rootRule" tag-format="semantics/1.0-literals" xmlns="http://www.w3.org/2001/06/grammar">
+  <rule id="rootRule">
+    <one-of>
+      <item>
+        <!--The name of the Voice Assistant-->>
+        <tag>Chris</tag>
+        <one-of>
+          <item> tina </item>
+          <item> chris </item>
+          <item> Chris </item>
+          <item> kris </item>
+        </one-of>
+      </item>
+      
+      <item>
+        <tag>er</tag>
+        <one-of>
+          <item> backward </item>
+          <item> backwards </item>
+          <item> back </item>
+          <item> authorization </item>
+          <item> turn on the serial </item>
+        </one-of>
+      </item>
+      
+      <item>
+        <tag>LEFT</tag>
+        <one-of>
+          <item> turn left </item>
+          <item> close the windows </item>
+        </one-of>
+      </item>
+      
+      <item>
+        <tag>RIGHT</tag>
+        <one-of>
+          <item> turn right </item>
+          <item> stop </item>
+        </one-of>
+      </item>
+      
+    </one-of>
+  </rule>
+</grammar>

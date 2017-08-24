@@ -132,6 +132,7 @@
         <CheckBox x:Name="ClickToRecordSerialPort" Content="Click to record serial messages" HorizontalAlignment="Left" Margin="528,540,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="ClickToRecordSerialPort_Checked" Unchecked="ClickToRecordSerialPort_Checked"/>
         <TextBlock x:Name="serialReceiveDataBox" HorizontalAlignment="Left" Margin="528,492,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Receive : " VerticalAlignment="Top" Width="446" Height="43" FontSize="15px"/>
         <CheckBox x:Name="useVoiceAssistant" Content="click to use voice assistant" HorizontalAlignment="Left" Margin="158,15,0,0" Grid.Row="2" VerticalAlignment="Top" Checked="useVoiceAssistant_Checked" Unchecked="useVoiceAssistant_Checked"/>
+        <TextBlock x:Name="regResult" HorizontalAlignment="Left" Margin="10,568,0,0" Grid.Row="1" TextWrapping="Wrap" Text="speech recognition" VerticalAlignment="Top" Width="214" Height="31"/>
 
 
 

@@ -10,11 +10,13 @@ namespace FesianXu.KinectGestureControl
     /// <summary>
     /// Chris, The Voice Assistant instance
     /// </summary>
-    class Chris : KinectVoiceRecognition, VoiceAssistant
+    class Chris : VoiceAssistant
     {
         private string voiceRootFolderPath = @"../../Resources/voices/";
         private Dictionary<string, string> voicesDict = new Dictionary<string, string>();
         private SoundPlayer player = new SoundPlayer();
+        private KinectVoiceRecognition voiceRecog;
+
 
         private string response_Wait = @"response_wait.wav"; // "please wait"
         private string response_Welcome = @"response_welcome.wav"; // "welcome to kinect gesture control system!"
@@ -37,7 +39,7 @@ namespace FesianXu.KinectGestureControl
         private string response_Refuse = @"response_refuse.wav"; // "your authority is limited"
 
 
-        public Chris()
+        public Chris(bool isused = false)
         {
             // initiation the available voice command now
             voicesDict.Add(nameof(response_Welcome), voiceRootFolderPath + response_Welcome);
@@ -60,7 +62,7 @@ namespace FesianXu.KinectGestureControl
             voicesDict.Add(nameof(response_OperationFailed), voiceRootFolderPath + response_OperationFailed);
             voicesDict.Add(nameof(response_Refuse), voiceRootFolderPath + response_Refuse);
 
-            IsUsedVoiceAssistant = false;
+            IsUsedVoiceAssistant = isused;
         }
 
         public void playWelcome()
@@ -89,6 +91,26 @@ namespace FesianXu.KinectGestureControl
             player.SoundLocation = voicesDict[nameof(response_KinectClosing)];
             player.Load();
             player.Play();
+        }
+
+        public void playYes()
+        {
+            if (IsUsedVoiceAssistant)
+            {
+                player.SoundLocation = voicesDict[nameof(response_YesQuestion)];
+                player.Load();
+                player.Play();
+            }
+        }
+
+        public void playWhatUp()
+        {
+            if (IsUsedVoiceAssistant)
+            {
+                player.SoundLocation = voicesDict[nameof(response_WhatUp)];
+                player.Load();
+                player.Play();
+            }
         }
 
         public bool IsUsedVoiceAssistant { get; set; }

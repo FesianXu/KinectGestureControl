@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using TensorFlow;
-using System.Speech.Synthesis;
 using System.Media;
 
 namespace FesianXu.KinectGestureControl
@@ -17,10 +16,11 @@ namespace FesianXu.KinectGestureControl
   
     partial class MainWindow
     {
-        private SpeechSynthesizer synth = new SpeechSynthesizer();
         private bool isKinectOpened;
         private bool isKinectVoiceBeginAndEnd = true;
         private Chris assistant = new Chris();
+
+        private KinectVoiceRecognition voiceReg = new KinectVoiceRecognition();
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -101,6 +101,10 @@ namespace FesianXu.KinectGestureControl
                     // play the welcome voice message
                     if(isKinectVoiceBeginAndEnd)
                         assistant.playWelcome();
+
+                    //load reg
+                    voiceReg.updateAndInitiate(ref sensor);
+
                 }
                 catch (IOException)
                 {
@@ -126,7 +130,7 @@ namespace FesianXu.KinectGestureControl
             {
                 try
                 {
-                    assistant.playKinectClosing();
+                    
                     this.sensor.Stop();
                     isKinectOpened = false;
                     lhand_global_sess.Dispose(true);
@@ -134,7 +138,10 @@ namespace FesianXu.KinectGestureControl
                     if (comm.PortStatus == SerialPortStatusEnum.Opened)
                         comm.closePort();
                     if(isKinectVoiceBeginAndEnd)
+                    {
+                        assistant.playKinectClosing();
                         System.Threading.Thread.Sleep(4200);
+                    }      
                 }
                 catch (System.Exception ex)
                 {
