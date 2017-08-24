@@ -1,4 +1,14 @@
-﻿using Microsoft.Kinect;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/24
+// Description: The partial class of MainWindows, for the sensors and other class 
+// initiation.including sensor loading and closing
+// version: v1.1
+// type: partial class
+//////////////////////////////////////////////////////////////////////////
+
+
+using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +23,6 @@ using System.Media;
 namespace FesianXu.KinectGestureControl
 {
 
-  
     partial class MainWindow
     {
         private bool isKinectOpened;
@@ -130,22 +139,28 @@ namespace FesianXu.KinectGestureControl
             {
                 try
                 {
-                    
                     this.sensor.Stop();
                     isKinectOpened = false;
                     lhand_global_sess.Dispose(true);
                     rhand_global_sess.Dispose(true);
                     if (comm.PortStatus == SerialPortStatusEnum.Opened)
                         comm.closePort();
-                    if(isKinectVoiceBeginAndEnd)
-                    {
-                        assistant.playKinectClosing();
-                        System.Threading.Thread.Sleep(4200);
-                    }      
                 }
                 catch (System.Exception ex)
                 {
-                    
+
+                }
+                finally
+                {
+                    if (voiceReg.haveStartedVAThread)
+                    {
+                        // here we should close the Voice Assistant Thread properly
+                    }
+                    if (isKinectVoiceBeginAndEnd)
+                    {
+                        assistant.playKinectClosing();
+                        System.Threading.Thread.Sleep(4200);
+                    }  
                 }
             }
         }

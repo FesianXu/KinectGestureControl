@@ -1,4 +1,13 @@
-﻿using Microsoft.Kinect;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/24
+// Description: The partial class of MainWindows, for the widget handles
+// version: v1.1
+// type: partial class
+//////////////////////////////////////////////////////////////////////////
+
+
+using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -160,7 +169,7 @@ namespace FesianXu.KinectGestureControl
             if (this.useVoiceAssistant.IsChecked.GetValueOrDefault())
             {
                 assistant.IsUsedVoiceAssistant = true;
-                //initVoiceAssistantThread(); // initiate and start the VA thread
+                initVoiceAssistantThread(); // initiate and start the VA thread
                 assistant.playHello();
             }
             else

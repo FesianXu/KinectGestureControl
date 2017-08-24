@@ -1,4 +1,15 @@
-﻿using System;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/24
+// Description: The information about the driving hands like angle, angle_rate and
+// so on
+// version: v1.1
+// type: class
+// inherit from: SkeletonShow
+//////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

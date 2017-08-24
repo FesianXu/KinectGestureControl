@@ -2,7 +2,7 @@
 // Author: FesianXu
 // Date: 2017/8/21
 // Description: hand recognition interface for palm or fist recognition
-// version: v0.2 
+// version: v1.1
 // type: interface
 //////////////////////////////////////////////////////////////////////////
 

@@ -1,4 +1,15 @@
-﻿using System;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/24
+// Description: The DrivingControl, a implement of Control interface
+// version: v1.1
+// type: class
+// inherit from: DrivingControlStrategy
+// implement of: Control
+//////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

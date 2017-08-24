@@ -1,4 +1,14 @@
-﻿using System;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/24
+// Description: The main windows of the whole program, mainly include the Kinect
+// AllFrameReadyHandle
+// version: v1.1
+// type: class
+//////////////////////////////////////////////////////////////////////////
+
+
+using System;
 //------------------------------------------------------------------------------
 // <copyright file="MainWindow.xaml.cs" company="Microsoft">
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
@@ -269,18 +279,7 @@ namespace FesianXu.KinectGestureControl
                             
                         }
 
-                        if (voiceReg.RecognizedResultSemantic == "Chris" && voiceReg.regStatus == SpeechRecognizeStatusEnum.Recognized)
-                        {
-                            assistant.playYes();
-                            voiceReg.regStatus = SpeechRecognizeStatusEnum.Rejected;
-                        }
-
-                        if (voiceReg.RecognizedResultSemantic == "LEFT" && voiceReg.regStatus == SpeechRecognizeStatusEnum.Recognized)
-                        {
-                            assistant.playWhatUp();
-                            voiceReg.regStatus = SpeechRecognizeStatusEnum.Rejected;
-                        }
-
+                        
                         regResult.Text = voiceReg.RecognizedResult;
                         ////////////////////////////////////////////////////////////////////////////
                     }

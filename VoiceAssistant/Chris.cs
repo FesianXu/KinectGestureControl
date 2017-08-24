@@ -1,4 +1,14 @@
-﻿using System;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/24
+// Description: The Voice Assistant instance, named Chris
+// version: v1.1
+// type: class
+// inherit from: None
+// implement of: VoiceAssistant
+//////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Media;
@@ -17,7 +27,7 @@ namespace FesianXu.KinectGestureControl
         private SoundPlayer player = new SoundPlayer();
         private KinectVoiceRecognition voiceRecog;
 
-
+        // the path of the voice wave files
         private string response_Wait = @"response_wait.wav"; // "please wait"
         private string response_Welcome = @"response_welcome.wav"; // "welcome to kinect gesture control system!"
         private string response_AsYouWantMaster = @"response_as_you_want_master.wav"; // "as you want, master"
@@ -65,6 +75,9 @@ namespace FesianXu.KinectGestureControl
             IsUsedVoiceAssistant = isused;
         }
 
+        /// <summary>
+        /// say "welcome to kinect gesture control system!"
+        /// </summary>
         public void playWelcome()
         {
             player.SoundLocation = voicesDict[nameof(response_Welcome)];
@@ -72,6 +85,10 @@ namespace FesianXu.KinectGestureControl
             player.Play();
         }
 
+
+        /// <summary>
+        /// say "here is Chris, your voice assistant"
+        /// </summary>
         public void playHello()
         {
             player.SoundLocation = voicesDict[nameof(response_VoiceAssistant)];
@@ -79,6 +96,10 @@ namespace FesianXu.KinectGestureControl
             player.Play();
         }
 
+
+        /// <summary>
+        /// say "see you next time"
+        /// </summary>
         public void playSeeYou()
         {
             player.SoundLocation = voicesDict[nameof(response_SeeYou)];
@@ -86,6 +107,10 @@ namespace FesianXu.KinectGestureControl
             player.Play();
         }
 
+
+        /// <summary>
+        /// say "Kinect Gesture System closing, wait for you next time"
+        /// </summary>
         public void playKinectClosing()
         {
             player.SoundLocation = voicesDict[nameof(response_KinectClosing)];
@@ -93,6 +118,10 @@ namespace FesianXu.KinectGestureControl
             player.Play();
         }
 
+
+        /// <summary>
+        /// say "yes?"
+        /// </summary>
         public void playYes()
         {
             if (IsUsedVoiceAssistant)
@@ -103,6 +132,10 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
+
+        /// <summary>
+        /// say "what's up"
+        /// </summary>
         public void playWhatUp()
         {
             if (IsUsedVoiceAssistant)
@@ -113,7 +146,8 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
-        public bool IsUsedVoiceAssistant { get; set; }
+        
+        public bool IsUsedVoiceAssistant { get; set; } // whether use the voice assistant or not
 
 
 
