@@ -7,6 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 
+using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,12 @@ namespace FesianXu.KinectGestureControl
 {
     interface VoiceRecognition
     {
+        void updateAndInitiate(ref KinectSensor s);
+
+        string RecognizedResult { get; set; }
+        string RecognizedResultSemantic { get; set; }
+        SpeechRecognizeStatusEnum regStatus { get; set; }
+        bool haveStartedVAThread { get; set; }
 
     }
 }

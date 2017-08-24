@@ -14,6 +14,8 @@ using System.Linq;
 using System.Media;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Kinect;
+using System.Threading;
 
 namespace FesianXu.KinectGestureControl
 {
@@ -22,10 +24,12 @@ namespace FesianXu.KinectGestureControl
     /// </summary>
     class Chris : VoiceAssistant
     {
+        private KinectSensor sensor;
         private string voiceRootFolderPath = @"../../Resources/voices/";
         private Dictionary<string, string> voicesDict = new Dictionary<string, string>();
         private SoundPlayer player = new SoundPlayer();
-        private KinectVoiceRecognition voiceRecog;
+        
+
 
         // the path of the voice wave files
         private string response_Wait = @"response_wait.wav"; // "please wait"
@@ -73,7 +77,24 @@ namespace FesianXu.KinectGestureControl
             voicesDict.Add(nameof(response_Refuse), voiceRootFolderPath + response_Refuse);
 
             IsUsedVoiceAssistant = isused;
+
+            // initiate the voice recognition
+            voiceRecog = new KinectVoiceRecognition();
+            
         }
+
+
+        public void updateKinectSensor(ref KinectSensor s)
+        {
+            sensor = s;
+        }
+
+        public void initVoiceRecog()
+        {
+            voiceRecog.updateAndInitiate(ref sensor);
+        }
+
+      
 
         /// <summary>
         /// say "welcome to kinect gesture control system!"
@@ -149,7 +170,7 @@ namespace FesianXu.KinectGestureControl
         
         public bool IsUsedVoiceAssistant { get; set; } // whether use the voice assistant or not
 
-
+        public VoiceRecognition voiceRecog { get;  } // voice recognition part
 
 
     }

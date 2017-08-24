@@ -1,4 +1,17 @@
-﻿using System;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/25
+// Description: Kinect Voice Recognition using Microsoft provided SAPI
+// version: v1.1
+// type: class
+// implement of:VoiceRecognition
+// Handle: 
+// void SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+// void SpeechRejected(object sender, SpeechRecognitionRejectedEventArgs e)
+//////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Text;
 using System.IO;
 using Microsoft.Kinect;
@@ -18,7 +31,9 @@ namespace FesianXu.KinectGestureControl
         /// </summary>
         private SpeechRecognitionEngine speechEngine;
         private string SpeechGrammarFilePath = @"../../Resources/SpeechGrammars/SpeechGrammar.xml";
-        
+        // Speech utterance confidence below which we treat speech as if it hadn't been heard
+        private const double ConfidenceThreshold = 0.5;
+
 
         public KinectVoiceRecognition()
         {
@@ -43,8 +58,6 @@ namespace FesianXu.KinectGestureControl
             speechEngine.SetInputToAudioStream(
             sensor.AudioSource.Start(), new SpeechAudioFormatInfo(EncodingFormat.Pcm, 16000, 16, 1, 32000, 2, null));
             speechEngine.RecognizeAsync(RecognizeMode.Multiple);
-
-
         }
 
         /// <summary>
@@ -76,9 +89,7 @@ namespace FesianXu.KinectGestureControl
         /// <param name="sender">object sending the event.</param>
         /// <param name="e">event arguments.</param>
         private void SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
-        {
-            // Speech utterance confidence below which we treat speech as if it hadn't been heard
-            const double ConfidenceThreshold = 0.5;
+        { 
             if (e.Result.Confidence >= ConfidenceThreshold)
             {
                 RecognizedResult = e.Result.Text;

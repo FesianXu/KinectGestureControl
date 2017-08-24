@@ -29,7 +29,7 @@ namespace FesianXu.KinectGestureControl
         private bool isKinectVoiceBeginAndEnd = true;
         private Chris assistant = new Chris();
 
-        private KinectVoiceRecognition voiceReg = new KinectVoiceRecognition();
+        //private KinectVoiceRecognition voiceReg = new KinectVoiceRecognition();
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -106,13 +106,15 @@ namespace FesianXu.KinectGestureControl
                         SerialBaudRateBox.Text = comm.baudInUsed.ToString() + " bps";
                     }
 
-                    // load the voice assistant
+                    // load the voice assistant and initiate it
+                    assistant.updateKinectSensor(ref sensor);
+                    assistant.initVoiceRecog();
                     // play the welcome voice message
                     if(isKinectVoiceBeginAndEnd)
                         assistant.playWelcome();
 
                     //load reg
-                    voiceReg.updateAndInitiate(ref sensor);
+                    //voiceReg.updateAndInitiate(ref sensor);
 
                 }
                 catch (IOException)
@@ -152,9 +154,10 @@ namespace FesianXu.KinectGestureControl
                 }
                 finally
                 {
-                    if (voiceReg.haveStartedVAThread)
+                    if (assistant.voiceRecog.haveStartedVAThread)
                     {
                         // here we should close the Voice Assistant Thread properly
+                        
                     }
                     if (isKinectVoiceBeginAndEnd)
                     {

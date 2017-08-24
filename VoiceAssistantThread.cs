@@ -18,32 +18,41 @@ namespace FesianXu.KinectGestureControl
     partial class MainWindow
     {
         private Thread t_VoiceAssistant;
+    
 
         private void initVoiceAssistantThread()
         {
             // if the VA thread has not been started, start one
-            if (voiceReg.haveStartedVAThread == false)
+            if (assistant.voiceRecog.haveStartedVAThread == false)
             {
-                t_VoiceAssistant = new Thread(VoiceAssistantHandle);
+                t_VoiceAssistant = new Thread(VoiceRecognitionHandle);
+                t_VoiceAssistant.IsBackground = true; 
+                // set it to background thread and it will be killed after the main thread dead
                 t_VoiceAssistant.Start();
-                voiceReg.haveStartedVAThread = true;
+                assistant.voiceRecog.haveStartedVAThread = true;
             }
 
         }
 
 
-        private void VoiceAssistantHandle()
+        private void VoiceRecognitionHandle()
         {
             //regResult.Text = voiceReg.RecognizedResult;
             while (true)
             {
-                if (voiceReg.RecognizedResultSemantic == "LEFT" && voiceReg.regStatus == SpeechRecognizeStatusEnum.Recognized)
+                if (assistant.voiceRecog.RecognizedResultSemantic == "LEFT" && 
+                    assistant.voiceRecog.regStatus == SpeechRecognizeStatusEnum.Recognized)
                 {
                     assistant.playWhatUp();
-                    voiceReg.regStatus = SpeechRecognizeStatusEnum.Rejected;
+                    assistant.voiceRecog.regStatus = SpeechRecognizeStatusEnum.Rejected;
                 }
-            }
+                // recognize the words and show them in UI
+
+                // recognize the words and execute
+
             
+            }
+
         }
 
 

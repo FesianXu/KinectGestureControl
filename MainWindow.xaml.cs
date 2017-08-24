@@ -279,14 +279,8 @@ namespace FesianXu.KinectGestureControl
                             
                         }
 
-
-                        //if (voiceReg.RecognizedResultSemantic == "Chris" && voiceReg.regStatus == SpeechRecognizeStatusEnum.Recognized)
-                        //{
-                        //    assistant.playYes();
-                        //    voiceReg.regStatus = SpeechRecognizeStatusEnum.Rejected;
-                        //}
-
-                        regResult.Text = voiceReg.RecognizedResult;
+                        // show the voice recognition result
+                        regResult.Text = assistant.voiceRecog.RecognizedResult;
                         ////////////////////////////////////////////////////////////////////////////
                     }
                 }
