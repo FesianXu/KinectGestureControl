@@ -28,18 +28,28 @@ namespace FesianXu.KinectGestureControl
                 t_VoiceAssistant.Start();
                 voiceReg.haveStartedVAThread = true;
             }
+
         }
 
 
         private void VoiceAssistantHandle()
         {
             //regResult.Text = voiceReg.RecognizedResult;
-            if (voiceReg.RecognizedResultSemantic == "LEFT" && voiceReg.regStatus == SpeechRecognizeStatusEnum.Recognized)
+            while (true)
             {
-                assistant.playWhatUp();
-                voiceReg.regStatus = SpeechRecognizeStatusEnum.Rejected;
+                if (voiceReg.RecognizedResultSemantic == "LEFT" && voiceReg.regStatus == SpeechRecognizeStatusEnum.Recognized)
+                {
+                    assistant.playWhatUp();
+                    voiceReg.regStatus = SpeechRecognizeStatusEnum.Rejected;
+                }
             }
+            
         }
+
+
+
+
+
 
 
     }

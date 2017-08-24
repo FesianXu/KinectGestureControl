@@ -1,29 +1,32 @@
-﻿<!--Speech Grammar files-->
-<grammar version="1.0" xml:lang="en-US" root="rootRule" tag-format="semantics/1.0-literals" xmlns="http://www.w3.org/2001/06/grammar">
+﻿<grammar version="1.0" xml:lang="en-US" root="rootRule" tag-format="semantics/1.0-literals" xmlns="http://www.w3.org/2001/06/grammar">
   <rule id="rootRule">
     <one-of>
       <item>
-        <!--The name of the Voice Assistant-->>
         <tag>Chris</tag>
         <one-of>
-          <item> Mike </item>
-          <item> chris </item>
+          <item> forwards </item>
+          <item> forward </item>
+          <item> straight </item>
+          <item> kinect </item>
           <item> Chris </item>
-          <item> kris </item>
+          <item> fesian your master</item>
+          <item> fesian </item>
+          <item> Christina </item>
+          <item> i am your master fesian </item>
+          <item> hey, Chris </item>
+          <item> hi, Chris </item>
         </one-of>
       </item>
-      
       <item>
-        <tag>er</tag>
+        <tag>Negative</tag>
         <one-of>
-          <item> backward </item>
+          <item> Negative </item>
           <item> backwards </item>
           <item> back </item>
           <item> authorization </item>
           <item> turn on the serial </item>
         </one-of>
       </item>
-      
       <item>
         <tag>LEFT</tag>
         <one-of>
@@ -31,7 +34,6 @@
           <item> close the windows </item>
         </one-of>
       </item>
-      
       <item>
         <tag>RIGHT</tag>
         <one-of>
@@ -39,7 +41,6 @@
           <item> stop </item>
         </one-of>
       </item>
-      
     </one-of>
   </rule>
 </grammar>
