@@ -230,33 +230,35 @@ namespace FesianXu.KinectGestureControl
                         }
 
                         // driving steering wheel
-                        if (info.Radius < DrivingHandInfo.bothHandsRadius_threshold
-                            && info.WhichHandInFront == HandInFront.SamePlane)
-                        {
-                            draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
-                        }
-                        else
-                        {
-                            if (info.Left2CenterDistance > DrivingHandInfo.singleHandsAway_threshold
-                                || info.WhichHandInFront == HandInFront.RightHand)
-                            {
-                                draw.drawSingleHandInWheel(info.RightHandPoint, info.OldCenterPosition, HandsEnum.rightHand);
-                            }
-                            else if (info.Right2CenterDistance > DrivingHandInfo.singleHandsAway_threshold
-                                || info.WhichHandInFront == HandInFront.LeftHand)
-                            {
-                                draw.drawSingleHandInWheel(info.LeftHandPoint, info.OldCenterPosition, HandsEnum.leftHand);
-                            }
-                            else
-                            {
-                                draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
-                            }
-                        }
+                        draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
+
+                        //if (info.Radius < DrivingHandInfo.bothHandsRadius_threshold
+                        //    && info.WhichHandInFront == HandInFront.SamePlane)
+                        //{
+                        //    draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
+                        //}
+                        //else
+                        //{
+                        //    if (info.Left2CenterDistance > DrivingHandInfo.singleHandsAway_threshold
+                        //        || info.WhichHandInFront == HandInFront.RightHand)
+                        //    {
+                        //        draw.drawSingleHandInWheel(info.RightHandPoint, info.OldCenterPosition, HandsEnum.rightHand);
+                        //    }
+                        //    else if (info.Right2CenterDistance > DrivingHandInfo.singleHandsAway_threshold
+                        //        || info.WhichHandInFront == HandInFront.LeftHand)
+                        //    {
+                        //        draw.drawSingleHandInWheel(info.LeftHandPoint, info.OldCenterPosition, HandsEnum.leftHand);
+                        //    }
+                        //    else
+                        //    {
+                        //        draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
+                        //    }
+                        //}
 
                         //communication with the slaver
                         if (comm.PortStatus == SerialPortStatusEnum.Opened)
                         {
-                            comm.writeLines("test");
+                            drvctl.driveYaw(info.Angle);
                             var buf = comm.ReceiveBuf;
                             if (buf != null)
                             {
@@ -283,9 +285,6 @@ namespace FesianXu.KinectGestureControl
             TotalCostTimeBox.Text = "TotalCostTime = " + total_tf.ToString() + " ms";
         }
 
-
-
-
-
+ 
     }
 }

@@ -12,7 +12,7 @@ namespace FesianXu.KinectGestureControl
     {
 
         private string SerialInfoBox_TextFormat = "SerialPortInfo:";
-
+        
         /// <summary>
         /// Handles the checking or unchecking of the seated mode combo box
         /// </summary>
@@ -148,5 +148,30 @@ namespace FesianXu.KinectGestureControl
                 comm.IsRecordSerialMessages = false;
             }
         }
+
+
+        /// <summary>
+        /// click to use voice assistant
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void useVoiceAssistant_Checked(object sender, RoutedEventArgs e)
+        {
+            if (this.useVoiceAssistant.IsChecked.GetValueOrDefault())
+            {
+                assistant.IsUsedVoiceAssistant = true;
+                assistant.playHello();
+            }
+            else
+            {
+                assistant.IsUsedVoiceAssistant = false;
+                assistant.playSeeYou();
+            }
+        }
+
+
+
+
+
     }
 }

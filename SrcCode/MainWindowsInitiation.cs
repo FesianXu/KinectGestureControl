@@ -8,11 +8,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using TensorFlow;
+using System.Speech.Synthesis;
+using System.Media;
 
 namespace FesianXu.KinectGestureControl
 {
+
+  
     partial class MainWindow
     {
+        private SpeechSynthesizer synth = new SpeechSynthesizer();
+        private bool isKinectOpened;
+        private Chris assistant = new Chris();
+
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
@@ -28,7 +36,7 @@ namespace FesianXu.KinectGestureControl
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
         private void WindowLoaded(object sender, RoutedEventArgs e)
-        {
+        {          
             // Create the drawing group we'll use for drawing
             this.drawingGroup = new DrawingGroup();
 
@@ -62,6 +70,7 @@ namespace FesianXu.KinectGestureControl
                 {
                     this.sensor.Start();
                     this.sensor.ElevationAngle = 6;
+                    isKinectOpened = true;
                     // load CNN models and initiation
                     lhand_global_graph = new TFGraph();
                     rhand_global_graph = new TFGraph();
@@ -86,10 +95,15 @@ namespace FesianXu.KinectGestureControl
                         SerialPortNameBox.Text = comm.portNameInUsed;
                         SerialBaudRateBox.Text = comm.baudInUsed.ToString() + " bps";
                     }
+
+                    // load the voice assistant
+                    // play the welcome voice message
+                    assistant.playWelcome();
                 }
                 catch (IOException)
                 {
                     this.sensor = null;
+                    isKinectOpened = false;
                 }
             }
 
@@ -108,11 +122,19 @@ namespace FesianXu.KinectGestureControl
         {
             if (null != this.sensor)
             {
-                this.sensor.Stop();
-                lhand_global_sess.Dispose(true);
-                rhand_global_sess.Dispose(true);
-                if (comm.PortStatus == SerialPortStatusEnum.Opened)
-                    comm.closePort();
+                try
+                {
+                    this.sensor.Stop();
+                    isKinectOpened = false;
+                    lhand_global_sess.Dispose(true);
+                    rhand_global_sess.Dispose(true);
+                    if (comm.PortStatus == SerialPortStatusEnum.Opened)
+                        comm.closePort();
+                }
+                catch (System.Exception ex)
+                {
+                    
+                }
             }
         }
     }

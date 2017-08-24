@@ -23,19 +23,36 @@ namespace FesianXu.KinectGestureControl
     };
 
     /*
-    * 协议帧格式
-    * <b>1:val,2:val,3:val,4:val,5:val,6:val,7:val,8:val,9:val,[校验位]<e>
-    * 允许缺失某个通道，其值为以前改变过后的最后一个值。
-    * 如果没有默认值则改为中值
-    * 校验位不可缺，此处校验采用的是异或校验，将所有的val异或比较
+    * the frame format of the protocol
+    * <b>1:val,2:val,3:val,4:val,5:val,6:val,7:val,8:val,9:val,[check bits]<e>
+    * allow the miss of some channels, the value will be the last changed value
+    * before changing
+    * if it does not have the default value, it will be set to the middle value between
+    * min_channel_val and min_channel_val
+    * the check bits cannot be missing, the check bits is using the Exclusive Or(xor)
+    * to check the frame, i.e. xor all the channels' value and check if it equal to
+    * the check bits.
     */
 
-    class DrivingControl :Control
+    class DrivingControl :DrivingControlStrategy, Control
     {
         private int checkbits;
         private ppmSignalStructure ppm;
         private Communicater comm;
         private const int LEN_PPM = 9;
+        private string frameBeginPattern = "<b>";
+        private string frameEndPattern = "<e>";
+        private string rollBeginPattern = "1:";
+        private string pitchBeginPattern = "2:";
+        private string throttlBeginPattern = "3:";
+        private string yawBeginPattern = "4:";
+        private string radio5BeginPattern = "5:";
+        private string radio6BeginPattern = "6:";
+        private string radio7BeginPattern = "7:";
+        private string radio8BeginPattern = "8:";
+
+        private readonly double proportion = 50/9 ;
+
 
         public DrivingControl(ref Communicater rc)
         {
@@ -56,7 +73,7 @@ namespace FesianXu.KinectGestureControl
             ppm = new_ppm;
         }
 
-        public void calculateCheckBits()
+        private void calculateCheckBits()
         {
             List<int> validlist = new List<int>();
             if (ppm.ElEV != -1)
@@ -92,7 +109,37 @@ namespace FesianXu.KinectGestureControl
             checkbits = re_check_val;
         }
 
-      
+        private void initPPM()
+        {
+            ppm.ElEV = -1;
+            ppm.AILE = -1;
+            ppm.THRO = -1;
+            ppm.RUDO = -1;
+            ppm.GEAR = -1;
+            ppm.AUX1 = -1;
+            ppm.AUX2 = -1;
+            ppm.AUX3 = -1;
+            ppm.AUX4 = -1;
+        }
+
+
+        public void driveYaw(double angle)
+        {
+            initPPM();
+            ppm.RUDO = (int)(angle * proportion + 1500);
+            ppm.THRO = 2000;
+            calculateCheckBits();
+            string check = string.Format(",[{0}]", checkbits);
+            string cmd = 
+                frameBeginPattern + 
+                yawBeginPattern + ppm.RUDO.ToString()+","+
+                throttlBeginPattern+ppm.THRO.ToString()+
+                check+
+                frameEndPattern;
+            comm.writeLines(cmd);
+        }
+
+        
 
     }
 }
