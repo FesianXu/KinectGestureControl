@@ -19,6 +19,7 @@ namespace FesianXu.KinectGestureControl
     {
         private SpeechSynthesizer synth = new SpeechSynthesizer();
         private bool isKinectOpened;
+        private bool isKinectVoiceBeginAndEnd = true;
         private Chris assistant = new Chris();
 
         /// <summary>
@@ -98,7 +99,8 @@ namespace FesianXu.KinectGestureControl
 
                     // load the voice assistant
                     // play the welcome voice message
-                    assistant.playWelcome();
+                    if(isKinectVoiceBeginAndEnd)
+                        assistant.playWelcome();
                 }
                 catch (IOException)
                 {
@@ -124,12 +126,15 @@ namespace FesianXu.KinectGestureControl
             {
                 try
                 {
+                    assistant.playKinectClosing();
                     this.sensor.Stop();
                     isKinectOpened = false;
                     lhand_global_sess.Dispose(true);
                     rhand_global_sess.Dispose(true);
                     if (comm.PortStatus == SerialPortStatusEnum.Opened)
                         comm.closePort();
+                    if(isKinectVoiceBeginAndEnd)
+                        System.Threading.Thread.Sleep(4200);
                 }
                 catch (System.Exception ex)
                 {

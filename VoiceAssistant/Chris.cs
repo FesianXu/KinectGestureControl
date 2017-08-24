@@ -10,7 +10,7 @@ namespace FesianXu.KinectGestureControl
     /// <summary>
     /// Chris, The Voice Assistant instance
     /// </summary>
-    class Chris : VoiceAssistant
+    class Chris : KinectVoiceRecognition, VoiceAssistant
     {
         private string voiceRootFolderPath = @"../../Resources/voices/";
         private Dictionary<string, string> voicesDict = new Dictionary<string, string>();
@@ -27,6 +27,14 @@ namespace FesianXu.KinectGestureControl
         private string response_KinectClosing = @"response_kinect_closing.wav"; // "Kinect Gesture System closing, wait for you next time"
         private string response_VoiceAssistant = @"response_voice_assistant.wav"; // "here is Chris, your voice assistant"
         private string response_SeeYou = @"response_see_you_next_time.wav"; // "see you next time"
+        private string response_WhatUp = @"response_what_up.wav"; // "what's up"
+        private string response_AuthorizationFailed = @"response_authorization_failed.wav"; // "authorization failed"
+        private string response_danger = @"response_danger.wav"; // "danger"
+        private string response_warning = @"response_warning.wav"; // "warning"
+        private string response_YesQuestion = @"response_yes_question.wav"; // "yes?"
+        private string response_Negative = @"response_negative.wav"; // "negative"
+        private string response_OperationFailed = @"response_operation_failed.wav"; // "operation failed"
+        private string response_Refuse = @"response_refuse.wav"; // "your authority is limited"
 
 
         public Chris()
@@ -43,6 +51,14 @@ namespace FesianXu.KinectGestureControl
             voicesDict.Add(nameof(response_KinectClosing), voiceRootFolderPath + response_KinectClosing);
             voicesDict.Add(nameof(response_VoiceAssistant), voiceRootFolderPath + response_VoiceAssistant);
             voicesDict.Add(nameof(response_SeeYou), voiceRootFolderPath + response_SeeYou);
+            voicesDict.Add(nameof(response_WhatUp), voiceRootFolderPath + response_WhatUp);
+            voicesDict.Add(nameof(response_AuthorizationFailed), voiceRootFolderPath + response_AuthorizationFailed);
+            voicesDict.Add(nameof(response_danger), voiceRootFolderPath + response_danger);
+            voicesDict.Add(nameof(response_warning), voiceRootFolderPath + response_warning);
+            voicesDict.Add(nameof(response_YesQuestion), voiceRootFolderPath + response_YesQuestion);
+            voicesDict.Add(nameof(response_Negative), voiceRootFolderPath + response_Negative);
+            voicesDict.Add(nameof(response_OperationFailed), voiceRootFolderPath + response_OperationFailed);
+            voicesDict.Add(nameof(response_Refuse), voiceRootFolderPath + response_Refuse);
 
             IsUsedVoiceAssistant = false;
         }
@@ -64,6 +80,13 @@ namespace FesianXu.KinectGestureControl
         public void playSeeYou()
         {
             player.SoundLocation = voicesDict[nameof(response_SeeYou)];
+            player.Load();
+            player.Play();
+        }
+
+        public void playKinectClosing()
+        {
+            player.SoundLocation = voicesDict[nameof(response_KinectClosing)];
             player.Load();
             player.Play();
         }

@@ -113,7 +113,9 @@
     <Compile Include="SrcCode\SkeletonShow.cs" />
     <Compile Include="SrcCode\WidgetHandles.cs" />
     <Compile Include="VoiceAssistant\Chris.cs" />
+    <Compile Include="VoiceAssistant\KinectVoiceRecognition.cs" />
     <Compile Include="VoiceAssistant\VoiceAssistant.cs" />
+    <Compile Include="VoiceAssistant\VoiceRecognition.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
