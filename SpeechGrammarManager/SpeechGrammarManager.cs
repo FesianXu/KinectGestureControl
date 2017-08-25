@@ -18,6 +18,16 @@ namespace FesianXu.KinectGestureControl
         private XmlNode root;
         private List<string> tag_list = new List<string>();
 
+        private string master;
+        private string chris;
+        private string requestForAuthorization;
+        private string logOut;
+        private string holdOn;
+        private string goOn;
+        private string stopTheKinect;
+        private string runTheKinect;
+        private string guest;
+
         public SpeechGrammarManager()
         {
             docxml.Load(xmlpath);
@@ -29,21 +39,34 @@ namespace FesianXu.KinectGestureControl
             {
                 tag_list.Add(c.InnerText);
             }
+            binding();
         }
 
-        private void distribute()
+        /// <summary>
+        /// binding the visitor to the speech recognition TAG
+        /// </summary>
+        private void binding()
         {
-
+            master = tag_list[0];
+            chris = tag_list[1];
+            requestForAuthorization = tag_list[2];
+            logOut = tag_list[3];
+            holdOn = tag_list[4];
+            goOn = tag_list[5];
+            stopTheKinect = tag_list[6];
+            runTheKinect = tag_list[7];
+            guest = tag_list[8];
         }
 
-        public string Master{ get; }
-        public string Chris { get; }
-        public string RequestForAuthorization { get; }
-        public string LogOut { get; }
-        public string HoldOn { get; }
-        public string Stop { get; }
-        public string Continue { get; }
-
+        public string Master{ get { return master; } }
+        public string Chris { get { return chris; } }
+        public string RequestForAuthorization { get { return requestForAuthorization; } }
+        public string LogOut { get { return logOut; } }
+        public string HoldOn { get { return holdOn; } }
+        public string Continue { get { return goOn; } }
+        public string StopTheKinect { get { return stopTheKinect; } }
+        public string RunTheKinect { get { return runTheKinect; } }
+        public string Guest { get { return guest; } }
 
     }
 }

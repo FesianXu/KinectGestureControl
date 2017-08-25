@@ -2,18 +2,16 @@
   <rule id="rootRule">
     <one-of>
 
+      <!--#1, master name and authorization-->
       <item>
         <tag>Master</tag>
         <one-of>
           <item> fesian </item>
           <item> fesianxu </item>
-          <item> fesian your master </item>
-          <item> i am your master </item>
-          <item> i am your master fesian </item>
-          <item> fesian your master</item>
         </one-of>
       </item>
-      
+
+      <!--#2, chris, the name of the VA-->
       <item>
         <tag>Chris</tag>
         <one-of>
@@ -25,54 +23,78 @@
         </one-of>
       </item>
       
+      <!--#3,request for authorization register-->
       <item>
         <tag>RequestForAuthorization</tag>
         <one-of>
           <item> authorization </item>
-          <item> authorization please </item>
-          <item> give me a authorization </item>
-          <item> authorization now </item>
           <item> log in </item>
         </one-of>
       </item>
-      
+
+      <!--#4,log out, give up the current authorization-->
       <item>
         <tag>LogOut</tag>
         <one-of>
           <item> log out </item>
         </one-of>
       </item>
-      
+
+
+      <!--#5,hold on, this command will make chris ignore all master command except the command of "continue"-->
       <item>
         <tag>HoldOn</tag>
         <one-of>
           <item> hold on </item>
-          <item> holding on </item>
-          <item> hold on please </item>
+          <item> wait </item>
         </one-of>
       </item>
-      
+
+
+      <!--#6, chris continue to serve you-->
       <item>
         <tag>Continue</tag>
         <one-of>
           <item> continue </item>
           <item> go on </item>
-          <item> to be continue </item>
+        </one-of>
+      </item>
+
+      <!--#7, chris stop the kinect-->
+     <item>
+        <tag>StopKinect</tag>
+        <one-of>
+          <item> stop </item>
+          <item> stop the kinect </item>
+        </one-of>
+      </item>
+
+      <!--#8, chris run the kinect-->
+      <item>
+        <tag>RunKinect</tag>
+        <one-of>
+          <item> run </item>
+          <item> run the kinect </item>
+        </one-of>
+      </item>
+
+
+
+      <!--#9, guest-->
+      <item>
+        <tag>Guest</tag>
+        <one-of>
+          <item> guest </item>
+          <item> Mike </item>
+          <item> Cooper </item>
+          <item> John </item>
         </one-of>
       </item>
       
-    <item>
-        <tag>Stop</tag>
-        <one-of>
-          <item> stop </item>
-          <item> stop please</item>
-          <item> stopped </item>
-          <item> stopped please</item>
-          <item> shut dowm </item>
-          <item> terminate </item>
-        </one-of>
-      </item>
-  
+      
+      
+      
+      
       
     </one-of>
   </rule>

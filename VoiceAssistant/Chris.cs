@@ -28,7 +28,7 @@ namespace FesianXu.KinectGestureControl
         private string voiceRootFolderPath = @"../../Resources/voices/";
         private Dictionary<string, string> voicesDict = new Dictionary<string, string>();
         private SoundPlayer player = new SoundPlayer();
-        
+        private SpeechGrammarManager speechGrammar;
 
 
         // the path of the voice wave files
@@ -51,6 +51,10 @@ namespace FesianXu.KinectGestureControl
         private string response_Negative = @"response_negative.wav"; // "negative"
         private string response_OperationFailed = @"response_operation_failed.wav"; // "operation failed"
         private string response_Refuse = @"response_refuse.wav"; // "your authority is limited"
+        private string response_Authorizing = @"response_authorizing.wav"; // "authorizing,please speak out your name"
+        private string response_LogOut = @"response_logging_out.wav"; // "logging out"
+        private string response_WelcomeMyMaster = @"response_welcome_master.wav"; // "welcome my master"
+        private string response_YouGuestIdentity = @"response_your_guest_identity.wav"; // "your identity is guest";
 
 
         public Chris(bool isused = false)
@@ -75,6 +79,10 @@ namespace FesianXu.KinectGestureControl
             voicesDict.Add(nameof(response_Negative), voiceRootFolderPath + response_Negative);
             voicesDict.Add(nameof(response_OperationFailed), voiceRootFolderPath + response_OperationFailed);
             voicesDict.Add(nameof(response_Refuse), voiceRootFolderPath + response_Refuse);
+            voicesDict.Add(nameof(response_Authorizing), voiceRootFolderPath + response_Authorizing);
+            voicesDict.Add(nameof(response_LogOut), voiceRootFolderPath + response_LogOut);
+            voicesDict.Add(nameof(response_WelcomeMyMaster), voiceRootFolderPath + response_WelcomeMyMaster);
+            voicesDict.Add(nameof(response_YouGuestIdentity), voiceRootFolderPath + response_YouGuestIdentity);
 
             IsUsedVoiceAssistant = isused;
 
@@ -94,7 +102,19 @@ namespace FesianXu.KinectGestureControl
             voiceRecog.updateAndInitiate(ref sensor);
         }
 
-      
+        public void updateSpeechGrammar(ref SpeechGrammarManager sgm)
+        {
+            speechGrammar = sgm;
+        }
+
+
+        public void clearTheVoiceRecognitionResult()
+        {
+            voiceRecog.RecognizedResult = "No Result";
+            voiceRecog.RecognizedResultSemantic = "No Result";
+        }
+
+        ////////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// say "welcome to kinect gesture control system!"
@@ -178,11 +198,72 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
+        public void playGuest()
+        {
+            if (IsUsedVoiceAssistant)
+            {
+                player.SoundLocation = voicesDict[nameof(response_guest)];
+                player.Load();
+                player.Play();
+            }
+        }
+
+        public void playAuthorizing()
+        {
+            if (IsUsedVoiceAssistant)
+            {
+                player.SoundLocation = voicesDict[nameof(response_Authorizing)];
+                player.Load();
+                player.Play();
+            }
+        }
+
+        public void playIdentityMaster()
+        {
+            if (IsUsedVoiceAssistant)
+            {
+                player.SoundLocation = voicesDict[nameof(response_WelcomeMyMaster)];
+                player.Load();
+                player.Play();
+            }
+        }
+
+        public void playIdentityGuest()
+        {
+            if (IsUsedVoiceAssistant)
+            {
+                player.SoundLocation = voicesDict[nameof(response_YouGuestIdentity)];
+                player.Load();
+                player.Play();
+            }
+        }
+
+        public void playLogOut()
+        {
+            if (IsUsedVoiceAssistant)
+            {
+                player.SoundLocation = voicesDict[nameof(response_LogOut)];
+                player.Load();
+                player.Play();
+            }
+        }
+
+
+        public void playAsYouWant()
+        {
+            if (IsUsedVoiceAssistant)
+            {
+                player.SoundLocation = voicesDict[nameof(response_AsYouWantMaster)];
+                player.Load();
+                player.Play();
+            }
+        }
+
         
         public bool IsUsedVoiceAssistant { get; set; } // whether use the voice assistant or not
 
         public VoiceRecognition voiceRecog { get;  } // voice recognition part
-
+        public SpeechGrammarManager SpeechGrammar { get { return speechGrammar; } }
 
     }
 }

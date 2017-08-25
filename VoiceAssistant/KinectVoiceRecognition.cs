@@ -32,7 +32,7 @@ namespace FesianXu.KinectGestureControl
         private SpeechRecognitionEngine speechEngine;
         private string SpeechGrammarFilePath = @"../../Resources/SpeechGrammars/SpeechGrammar.xml";
         // Speech utterance confidence below which we treat speech as if it hadn't been heard
-        private const double ConfidenceThreshold = 0.5;
+        private const double ConfidenceThreshold = 0.6;
 
 
         public KinectVoiceRecognition()

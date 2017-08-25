@@ -111,6 +111,7 @@ namespace FesianXu.KinectGestureControl
                     // load the voice assistant and initiate it
                     assistant.updateKinectSensor(ref sensor);
                     assistant.initVoiceRecog();
+                    assistant.updateSpeechGrammar(ref grammar);
                     // play the welcome voice message
                     if(isKinectVoiceBeginAndEnd)
                         assistant.playWelcome();
@@ -118,8 +119,7 @@ namespace FesianXu.KinectGestureControl
 
                     // SpeechGrammarManager
 
-                    //load reg
-                    //voiceReg.updateAndInitiate(ref sensor);
+                    //the priority manager used VA system
                     priorityManager.updateAssistant(ref assistant);
 
                 }

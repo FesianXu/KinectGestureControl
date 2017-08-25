@@ -31,6 +31,16 @@ namespace FesianXu.KinectGestureControl
         {
         }
 
+        protected void runKinect()
+        {
+
+        }
+
+        protected void stopKinect()
+        {
+            KinectRunningBeginWay = KinectRunBeginWayEnum.NoRunningNow;
+        }
+
 
         public KinectRunBeginWayEnum KinectRunningBeginWay { get; set; }
     }
