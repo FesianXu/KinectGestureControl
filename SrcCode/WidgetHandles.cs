@@ -180,6 +180,26 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// the backdoor button for running the kinect gesture control system
+        /// without the authorization in voice assistant chris
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BackDoorButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (priorityManager.KinectRunningBeginWay == KinectRunBeginWayEnum.NoRunningNow)
+            {
+                    priorityManager.KinectRunningBeginWay = KinectRunBeginWayEnum.Button_Init;
+                    BackDoorButton.Content = "Stop the Kinect";
+            }
+            else
+            {
+                priorityManager.KinectRunningBeginWay = KinectRunBeginWayEnum.NoRunningNow;
+                BackDoorButton.Content = "Run the Kinect";
+            }
+        }
+
 
 
 

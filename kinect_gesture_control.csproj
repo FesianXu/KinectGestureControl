@@ -116,6 +116,9 @@
     <Compile Include="SrcCode\SerialCommunicater.cs" />
     <Compile Include="SrcCode\SkeletonShow.cs" />
     <Compile Include="SrcCode\WidgetHandles.cs" />
+    <Compile Include="SystemControlManager\SystemControlManager.cs" />
+    <Compile Include="SystemControlManager\SystemControlManagers.cs" />
+    <Compile Include="UserPriorityManager\UserPriorityManager.cs" />
     <Compile Include="VoiceAssistantThread.cs" />
     <Compile Include="VoiceAssistant\Chris.cs" />
     <Compile Include="VoiceAssistant\KinectVoiceRecognition.cs" />
@@ -209,6 +212,7 @@
     <Content Include="Resources\voices\response_your_identity_is.wav" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Authorization\" />
     <Folder Include="Records\SerialMessagesRecords\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

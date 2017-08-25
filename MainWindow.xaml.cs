@@ -142,6 +142,10 @@ namespace FesianXu.KinectGestureControl
         /// <param name="e">event arguments</param>
         private void AllFrameReadyHandle(object sender, AllFramesReadyEventArgs e)
         {
+            if (priorityManager.KinectRunningBeginWay == KinectRunBeginWayEnum.NoRunningNow)
+            {
+                return;
+            }
             DateTime total_before = DateTime.Now;
 
             Skeleton[] skeletons = new Skeleton[0];
@@ -294,6 +298,6 @@ namespace FesianXu.KinectGestureControl
             TotalCostTimeBox.Text = "TotalCostTime = " + total_tf.ToString() + " ms";
         }
 
- 
+
     }
 }

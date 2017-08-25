@@ -28,6 +28,7 @@ namespace FesianXu.KinectGestureControl
         private bool isKinectOpened;
         private bool isKinectVoiceBeginAndEnd = true;
         private Chris assistant = new Chris();
+        private UserPriorityManager priorityManager = new UserPriorityManager();
 
         //private KinectVoiceRecognition voiceReg = new KinectVoiceRecognition();
 
@@ -115,6 +116,7 @@ namespace FesianXu.KinectGestureControl
 
                     //load reg
                     //voiceReg.updateAndInitiate(ref sensor);
+                    priorityManager.updateAssistant(ref assistant);
 
                 }
                 catch (IOException)
@@ -167,5 +169,15 @@ namespace FesianXu.KinectGestureControl
                 }
             }
         }
+
+
+
+
+
+
+
+
+
+
     }
 }

@@ -4,7 +4,7 @@
         Title="Kinect Gesture Control Demo" Height="800" Width="1200" MaxWidth="1024" MaxHeight="800"  Loaded="WindowLoaded" Closing="WindowClosing">
     <!--forbid to stretch the windows-->
 
- <Window.Resources>
+    <Window.Resources>
         <SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e"/>
         <SolidColorBrush x:Key="KinectPurpleBrush" Color="#ff52318f"/>
         <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2"/>
@@ -108,17 +108,17 @@
         <TextBlock Name="angleRateBox" HorizontalAlignment="Left" Margin="22,437,0,0" Grid.Row="1" TextWrapping="Wrap" Text="AngleRate = ?" VerticalAlignment="Top" FontSize="20px"/>
         <TextBlock Name="LeftHandStatusBox" HorizontalAlignment="Left" Margin="22,468,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Left hand is ?" VerticalAlignment="Top" FontSize="20px"/>
         <TextBlock Name="RightHandStatusBox" HorizontalAlignment="Left" Margin="22,499,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Right hand is ?" VerticalAlignment="Top" FontSize="20px"/>
-        
+
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="60" Grid.Row="2" VerticalAlignment="Top" Width="984" Grid.RowSpan="2"/>
         <TextBlock x:Name="TotalCostTimeBox" HorizontalAlignment="Left" Margin="232,406,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Total Cost Time = ?" VerticalAlignment="Top" FontSize="20px"/>
         <TextBlock x:Name="HandsROIStatusBox" HorizontalAlignment="Left" Margin="232,437,0,0" Grid.Row="1" TextWrapping="Wrap" Text="The status of hands is ?" VerticalAlignment="Top" FontSize="20px"/>
 
-       
+
         <!--serial port area-->
         <ComboBox x:Name="SerialPortNameBox" HorizontalAlignment="Left" Margin="528,410,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120" SelectionChanged="SerialPortNameBox_SelectionChanged">
-            
+
         </ComboBox>
-        
+
         <ComboBox x:Name="SerialBaudRateBox" HorizontalAlignment="Left" Margin="675,410,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120" SelectionChanged="SerialBaudRateBox_SelectionChanged">
             <ComboBoxItem Name="Baud9600bps">9600 bps</ComboBoxItem>
             <ComboBoxItem Name="Baud19200bps">19200 bps</ComboBoxItem>
@@ -126,14 +126,16 @@
         </ComboBox>
 
         <Button x:Name="OpenPort" Content="Open Port" HorizontalAlignment="Left" Margin="831,410,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="OpenPort_Click"/>
-        
+
         <!--the text block to show the infomation about serial port-->
         <TextBlock x:Name="SerialInfoBox" HorizontalAlignment="Left" Margin="528,437,0,0" Grid.Row="1" TextWrapping="Wrap" Text="SerialPortInfo:" VerticalAlignment="Top" Width="446" Height="40" FontSize="15px"/>
         <CheckBox x:Name="ClickToRecordSerialPort" Content="Click to record serial messages" HorizontalAlignment="Left" Margin="528,540,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="ClickToRecordSerialPort_Checked" Unchecked="ClickToRecordSerialPort_Checked"/>
         <TextBlock x:Name="serialReceiveDataBox" HorizontalAlignment="Left" Margin="528,492,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Receive : " VerticalAlignment="Top" Width="446" Height="43" FontSize="15px"/>
         <CheckBox x:Name="useVoiceAssistant" Content="click to use voice assistant" HorizontalAlignment="Left" Margin="158,15,0,0" Grid.Row="2" VerticalAlignment="Top" Checked="useVoiceAssistant_Checked" Unchecked="useVoiceAssistant_Checked"/>
-        <TextBlock x:Name="VoiceRecognitionResultBox" HorizontalAlignment="Left" Margin="10,568,0,0" Grid.Row="1" TextWrapping="Wrap" Text="speech recognition" VerticalAlignment="Top" Width="711" Height="31" FontSize="15px"/>
-
+        <TextBlock x:Name="VoiceRecognitionResultBox" HorizontalAlignment="Left" Margin="10,568,0,0" Grid.Row="1" TextWrapping="Wrap" Text="speech recognition" VerticalAlignment="Top" Width="504" Height="31" FontSize="15px"/>
+        <!--this botton is used to run the system with the master priority without authorization in the Voice Assistant-->
+        <Button x:Name="BackDoorButton" Content="Run The System" HorizontalAlignment="Left" Margin="811,568,0,0" Grid.Row="1" VerticalAlignment="Top" Width="110" Height="31" Click="BackDoorButton_Click" />
+        
 
 
 

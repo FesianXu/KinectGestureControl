@@ -39,30 +39,13 @@ namespace FesianXu.KinectGestureControl
 
         private void VoiceRecognitionThreadHandle()
         {
-            //regResult.Text = voiceReg.RecognizedResult;
             while (true)
             {
-                if (assistant.voiceRecog.RecognizedResultSemantic == "Chris" && 
-                    assistant.voiceRecog.regStatus == SpeechRecognizeStatusEnum.Recognized)
-                {
-                    assistant.playWhatUp();
-                    assistant.voiceRecog.regStatus = SpeechRecognizeStatusEnum.Rejected;
-                }
-                if (assistant.voiceRecog.RecognizedResultSemantic == "HoldOn" &&
-                    assistant.voiceRecog.regStatus == SpeechRecognizeStatusEnum.Recognized)
-                {
-                    assistant.playMaster();
-                    assistant.voiceRecog.regStatus = SpeechRecognizeStatusEnum.Rejected;
-                }
                 // recognize the words and show them in UI
                 VoiceRecognitionResultBox.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Render,
                     new Action(updateVoiceRecognitionResultBox));
-
-
-
                 // recognize the words and execute
-
-
+                priorityManager.execute();
             }
 
         }
@@ -71,8 +54,6 @@ namespace FesianXu.KinectGestureControl
         {
             VoiceRecognitionResultBox.Text = assistant.voiceRecog.RecognizedResult;
         }
-
-
 
 
 
