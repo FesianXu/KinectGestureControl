@@ -44,10 +44,10 @@ namespace FesianXu.KinectGestureControl
                 while (assistant.IsUsedVoiceAssistant)
                 {
                     // recognize the words and show them in UI
-                    VoiceRecognitionResultBox.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Render,
+                    VoiceRecognitionResultBox.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
                         new Action(updateVoiceRecognitionResultBox));
 
-                    BackDoorButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Render,
+                    BackDoorButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
                      new Action(updateBackDoorButtonContent));
 
                     // recognize the words and execute

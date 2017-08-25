@@ -134,6 +134,8 @@ namespace FesianXu.KinectGestureControl
         // driving control
         private DrivingControl drvctl = new DrivingControl();
 
+        private int counter_cnn = 0;
+
     
         /// <summary>
         /// Event handler for Kinect sensor's SkeletonFrameReady event
@@ -217,17 +219,23 @@ namespace FesianXu.KinectGestureControl
                                  96, 96, PixelFormats.Bgr32, null, rhand_p, info.handWidth * 4);
                             byte[] lhand_c3 = byteprocess.removeAlphaChannel(ref lhand_p);
                             byte[] rhand_c3 = byteprocess.removeAlphaChannel(ref rhand_p);
-                            var p_l = recognizeHands(HandsEnum.leftHand, ref lhand_c3);
-                            if (p_l[0] == 1)
-                                LeftHandStatusBox.Text = "Left Hand is palm";
-                            else
-                                LeftHandStatusBox.Text = "Left Hand is fist";
 
-                            var p_r = recognizeHands(HandsEnum.rightHand, ref rhand_c3);
-                            if (p_r[0] == 1)
-                                RightHandStatusBox.Text = "Right Hand is palm";
-                            else
-                                RightHandStatusBox.Text = "Right Hand is fist";
+                            if (counter_cnn == 6)
+                            {
+                                var p_l = recognizeHands(HandsEnum.leftHand, ref lhand_c3);
+                                if (p_l[0] == 1)
+                                    LeftHandStatusBox.Text = "Left Hand is palm";
+                                else
+                                    LeftHandStatusBox.Text = "Left Hand is fist";
+
+                                var p_r = recognizeHands(HandsEnum.rightHand, ref rhand_c3);
+                                if (p_r[0] == 1)
+                                    RightHandStatusBox.Text = "Right Hand is palm";
+                                else
+                                    RightHandStatusBox.Text = "Right Hand is fist";
+                                counter_cnn = 0;
+                            }
+                            counter_cnn++;
 
 
                             if (isShowColorHandsValue)
