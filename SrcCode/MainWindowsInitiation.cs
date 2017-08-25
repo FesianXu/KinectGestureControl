@@ -29,6 +29,7 @@ namespace FesianXu.KinectGestureControl
         private bool isKinectVoiceBeginAndEnd = true;
         private Chris assistant = new Chris();
         private UserPriorityManager priorityManager = new UserPriorityManager();
+        private SpeechGrammarManager grammar = new SpeechGrammarManager();
 
         //private KinectVoiceRecognition voiceReg = new KinectVoiceRecognition();
 
@@ -113,6 +114,9 @@ namespace FesianXu.KinectGestureControl
                     // play the welcome voice message
                     if(isKinectVoiceBeginAndEnd)
                         assistant.playWelcome();
+
+
+                    // SpeechGrammarManager
 
                     //load reg
                     //voiceReg.updateAndInitiate(ref sensor);

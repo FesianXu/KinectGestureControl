@@ -32,7 +32,7 @@ namespace FesianXu.KinectGestureControl
                 assistant.playWhatUp();
                 assistant.voiceRecog.regStatus = SpeechRecognizeStatusEnum.Rejected;
             }
-            if (assistant.voiceRecog.RecognizedResultSemantic == "HoldOn" &&
+            if (assistant.voiceRecog.RecognizedResultSemantic == "Stop" &&
                 assistant.voiceRecog.regStatus == SpeechRecognizeStatusEnum.Recognized)
             {
                 assistant.playMaster();

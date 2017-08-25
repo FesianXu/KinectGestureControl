@@ -52,6 +52,28 @@
         </one-of>
       </item>
       
+      <item>
+        <tag>Continue</tag>
+        <one-of>
+          <item> continue </item>
+          <item> go on </item>
+          <item> to be continue </item>
+        </one-of>
+      </item>
+      
+    <item>
+        <tag>Stop</tag>
+        <one-of>
+          <item> stop </item>
+          <item> stop please</item>
+          <item> stopped </item>
+          <item> stopped please</item>
+          <item> shut dowm </item>
+          <item> terminate </item>
+        </one-of>
+      </item>
+  
+      
     </one-of>
   </rule>
 </grammar>
