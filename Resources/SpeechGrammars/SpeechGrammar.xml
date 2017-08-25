@@ -1,46 +1,57 @@
 ﻿<grammar version="1.0" xml:lang="en-US" root="rootRule" tag-format="semantics/1.0-literals" xmlns="http://www.w3.org/2001/06/grammar">
   <rule id="rootRule">
     <one-of>
+
+      <item>
+        <tag>Master</tag>
+        <one-of>
+          <item> fesian </item>
+          <item> fesianxu </item>
+          <item> fesian your master </item>
+          <item> i am your master </item>
+          <item> i am your master fesian </item>
+          <item> fesian your master</item>
+        </one-of>
+      </item>
+      
       <item>
         <tag>Chris</tag>
         <one-of>
-          <item> forwards </item>
-          <item> forward </item>
-          <item> straight </item>
-          <item> kinect </item>
           <item> Chris </item>
-          <item> fesian your master</item>
-          <item> fesian </item>
           <item> Christina </item>
-          <item> i am your master fesian </item>
           <item> hey, Chris </item>
           <item> hi, Chris </item>
+          <item> hello, Chris </item>
         </one-of>
       </item>
+      
       <item>
-        <tag>Negative</tag>
+        <tag>RequestForAuthorization</tag>
         <one-of>
-          <item> Negative </item>
-          <item> backwards </item>
-          <item> back </item>
           <item> authorization </item>
-          <item> turn on the serial </item>
+          <item> authorization please </item>
+          <item> give me a authorization </item>
+          <item> authorization now </item>
+          <item> log in </item>
         </one-of>
       </item>
+      
       <item>
-        <tag>LEFT</tag>
+        <tag>LogOut</tag>
         <one-of>
-          <item> turn left </item>
-          <item> close the windows </item>
+          <item> log out </item>
         </one-of>
       </item>
+      
       <item>
-        <tag>RIGHT</tag>
+        <tag>HoldOn</tag>
         <one-of>
-          <item> turn right </item>
-          <item> stop </item>
+          <item> hold on </item>
+          <item> holding on </item>
+          <item> hold on please </item>
         </one-of>
       </item>
+      
     </one-of>
   </rule>
 </grammar>

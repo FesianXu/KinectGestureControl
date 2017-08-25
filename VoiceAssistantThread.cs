@@ -25,9 +25,11 @@ namespace FesianXu.KinectGestureControl
             // if the VA thread has not been started, start one
             if (assistant.voiceRecog.haveStartedVAThread == false)
             {
-                t_VoiceAssistant = new Thread(VoiceRecognitionHandle);
-                t_VoiceAssistant.IsBackground = true; 
+                t_VoiceAssistant = new Thread(VoiceRecognitionThreadHandle);
+                t_VoiceAssistant.IsBackground = true;
                 // set it to background thread and it will be killed after the main thread dead
+                t_VoiceAssistant.Priority = ThreadPriority.Highest;
+                // assistant have the highest thread priority
                 t_VoiceAssistant.Start();
                 assistant.voiceRecog.haveStartedVAThread = true;
             }
@@ -35,27 +37,40 @@ namespace FesianXu.KinectGestureControl
         }
 
 
-        private void VoiceRecognitionHandle()
+        private void VoiceRecognitionThreadHandle()
         {
             //regResult.Text = voiceReg.RecognizedResult;
             while (true)
             {
-                if (assistant.voiceRecog.RecognizedResultSemantic == "LEFT" && 
+                if (assistant.voiceRecog.RecognizedResultSemantic == "Chris" && 
                     assistant.voiceRecog.regStatus == SpeechRecognizeStatusEnum.Recognized)
                 {
                     assistant.playWhatUp();
                     assistant.voiceRecog.regStatus = SpeechRecognizeStatusEnum.Rejected;
                 }
+                if (assistant.voiceRecog.RecognizedResultSemantic == "HoldOn" &&
+                    assistant.voiceRecog.regStatus == SpeechRecognizeStatusEnum.Recognized)
+                {
+                    assistant.playMaster();
+                    assistant.voiceRecog.regStatus = SpeechRecognizeStatusEnum.Rejected;
+                }
                 // recognize the words and show them in UI
+                VoiceRecognitionResultBox.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Render,
+                    new Action(updateVoiceRecognitionResultBox));
+
+
 
                 // recognize the words and execute
 
-            
+
             }
 
         }
 
-
+        private void updateVoiceRecognitionResultBox()
+        {
+            VoiceRecognitionResultBox.Text = assistant.voiceRecog.RecognizedResult;
+        }
 
 
 

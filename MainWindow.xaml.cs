@@ -279,8 +279,6 @@ namespace FesianXu.KinectGestureControl
                             
                         }
 
-                        // show the voice recognition result
-                        regResult.Text = assistant.voiceRecog.RecognizedResult;
                         ////////////////////////////////////////////////////////////////////////////
                     }
                 }

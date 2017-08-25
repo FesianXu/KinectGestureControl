@@ -167,6 +167,17 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
+
+        public void playMaster()
+        {
+            if (IsUsedVoiceAssistant)
+            {
+                player.SoundLocation = voicesDict[nameof(response_master)];
+                player.Load();
+                player.Play();
+            }
+        }
+
         
         public bool IsUsedVoiceAssistant { get; set; } // whether use the voice assistant or not
 
