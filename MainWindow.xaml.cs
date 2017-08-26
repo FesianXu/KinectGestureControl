@@ -277,16 +277,25 @@ namespace FesianXu.KinectGestureControl
                         //    }
                         //}
 
+
                         //communication with the slaver
                         if (comm.PortStatus == SerialPortStatusEnum.Opened)
                         {
                             drvctl.driveYaw(info.Angle);
                             var buf = comm.ReceiveBuf;
-                            if (buf != null)
+                            if (comm.ReceiveBufferLength != 0 && comm.ReceiveStatus ==
+                                SerialReceiveStatusEnum.ReceiveEnd)
                             {
-                                var data2chars = System.Text.Encoding.ASCII.GetChars(buf);
-                                string ss = new string(data2chars);
-                                serialReceiveDataBox.Text = ss;
+                                // cut
+                                byte[] tmpstr = new byte[comm.ReceiveBufferLength];
+                                Buffer.BlockCopy(buf, 0, tmpstr, 0, comm.ReceiveBufferLength);
+                                if (tmpstr != null)
+                                {
+                                    var data2chars = System.Text.Encoding.ASCII.GetChars(tmpstr);
+                                    string ss = new string(data2chars);
+                                    serialReceiveDataBox.Text = ss;
+                                    comm.clearBuf();
+                                }
                             }
                             
                         }

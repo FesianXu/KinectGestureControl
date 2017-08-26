@@ -57,6 +57,8 @@ namespace FesianXu.KinectGestureControl
         /// </summary>
         void useHistorySetting();
 
+        void clearBuf();
+
         List<string> AvailableSerialPortNames { get; }
         List<int> AvailableBaudRates { get; }
         int baudInUsed { get; set; }
@@ -67,5 +69,7 @@ namespace FesianXu.KinectGestureControl
         bool IsRecordSerialMessages { get; set; }
         bool IsUsedHistoryParams { get; set; }
         byte[] ReceiveBuf { get; }
+        int ReceiveBufferLength { get; }
+        SerialReceiveStatusEnum ReceiveStatus { get; }
     }
 }

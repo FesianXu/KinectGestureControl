@@ -5,6 +5,8 @@
 // version: v1.1 
 // type: class
 // implement of: Communicater
+// handles:
+// void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -22,6 +24,8 @@ namespace FesianXu.KinectGestureControl
 {
 
     public enum SerialPortStatusEnum { Opened, Closed };
+    public enum SerialReceiveStatusEnum { ReceiveStart, ReceiveEnd, NoReceive};
+
 
     public struct SerialHistoryParameters
     {
@@ -40,14 +44,18 @@ namespace FesianXu.KinectGestureControl
         private List<string> availableSerialPortNameList = new List<string> { };
         private SerialPortStatusEnum portStatus;
         private string historyParamsSavePath = @"../../Setting/SerialPortHistorySetting.ini";
-        private string serialMessagesRecordsFolderPath = @"../../Records/SerialMessagesRecords/";
+        private string serialMessagesRootRecordsFolderPath = @"../../Records/SerialMessagesRecords/";
 
         private static string historySerialPortNameFormat = @"<SerialPortName>=";
         private static string historySerialBaudRateFormat = @"<SerialPortBaudRate>=";
         private static string historySerialSettingTimeFormat = @"<SettingTime>=";
         private static string NewLineFormat = "\r\n";
 
-        private byte[] receive_buf;
+        // serial data receive
+        private const int receiveBufMaxSize = 1000;
+        private byte[] receive_buf = new byte[receiveBufMaxSize];
+        private SerialReceiveStatusEnum receiveStatus;
+
 
         private SerialHistoryParameters historyParams;
         
@@ -60,6 +68,7 @@ namespace FesianXu.KinectGestureControl
             }
             portStatus = SerialPortStatusEnum.Closed;
             // get the available port names
+            receiveStatus = SerialReceiveStatusEnum.NoReceive;
         }
 
 
@@ -205,13 +214,57 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        private int current_location = 0;
+        private byte[] tmpbytes = new byte[100];
+        private int buf_len = 0;
         private void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            int len = sp.BytesToRead;
-            receive_buf = new byte[len];
-            sp.Read(receive_buf, 0, len);
-            //var data2chars = Encoding.ASCII.GetChars(receive_buf);
+            if (receiveStatus != SerialReceiveStatusEnum.ReceiveStart)
+            {
+                receiveStatus = SerialReceiveStatusEnum.ReceiveStart;
+            }
+            if (receiveStatus == SerialReceiveStatusEnum.ReceiveStart)
+            {
+                int len = sp.BytesToRead;
+                sp.Read(tmpbytes, 0, len);
+                //int id_r = Array.IndexOf(tmpbytes, (byte)0x0d);
+                //int id_n = Array.IndexOf(tmpbytes, (byte)0x0a);
+                //if (id_r == id_n - 1)
+                //{
+                //    len = id_r;
+                //    receiveStatus = SerialReceiveStatusEnum.ReceiveEnd;
+                //}
+                Buffer.BlockCopy(tmpbytes, 0, receive_buf, current_location, len);
+                current_location = len + current_location;
+                Array.Clear(tmpbytes, 0, len);
+                // to check the buffer
+
+                findNewLine();
+                if (receiveStatus == SerialReceiveStatusEnum.ReceiveEnd)
+                {
+                    buf_len = current_location;
+                    current_location = 0;
+                }
+            }
         }
+
+
+        private void findNewLine()
+        {
+            int id_r = Array.IndexOf(receive_buf, (byte)0x0d);
+            int id_n = Array.IndexOf(receive_buf, (byte)0x0a);
+            if (id_r == id_n - 1)
+            {
+                receiveStatus = SerialReceiveStatusEnum.ReceiveEnd;
+            }
+        }
+
+        public void clearBuf()
+        {
+            Array.Clear(receive_buf, 0, buf_len+2);
+            buf_len = 0;
+        }
+
 
 
         /// <summary>
@@ -236,5 +289,7 @@ namespace FesianXu.KinectGestureControl
         public bool IsUsedHistoryParams { get; set; }
 
         public byte[] ReceiveBuf { get { return receive_buf; } }
+        public int ReceiveBufferLength { get { return buf_len; } }
+        public SerialReceiveStatusEnum ReceiveStatus { get { return receiveStatus; } }
     }
 }
