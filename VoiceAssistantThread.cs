@@ -28,7 +28,7 @@ namespace FesianXu.KinectGestureControl
                 t_VoiceAssistant = new Thread(VoiceRecognitionThreadHandle);
                 t_VoiceAssistant.IsBackground = true;
                 // set it to background thread and it will be killed after the main thread dead
-                t_VoiceAssistant.Priority = ThreadPriority.Highest;
+                t_VoiceAssistant.Priority = ThreadPriority.Normal;
                 // assistant have the highest thread priority
                 t_VoiceAssistant.Start();
                 assistant.voiceRecog.haveStartedVAThread = true;

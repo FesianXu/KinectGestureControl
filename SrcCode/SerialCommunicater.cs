@@ -214,10 +214,7 @@ namespace FesianXu.KinectGestureControl
         }
 
 
-        private int current_location = 0;
-        private byte[] tmpbytes = new byte[100];
         private int buf_len = 0;
-        private List<byte> buffer = new List<byte>(1000);
         private void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             if (receiveStatus != SerialReceiveStatusEnum.ReceiveStart)
@@ -226,20 +223,9 @@ namespace FesianXu.KinectGestureControl
             }
             if (receiveStatus == SerialReceiveStatusEnum.ReceiveStart)
             {
-                int len = sp.BytesToRead;
-                byte[] buf = new byte[len];
-                sp.Read(buf, 0, len);
-                buffer.AddRange(buf);
-                buffer.CopyTo(0, receive_buf, 0, buffer.Count);
-                int ind_r = Array.IndexOf(receive_buf, (byte)0x0d);
-                int ind_n = Array.IndexOf(receive_buf, (byte)0x0a);
-                current_location = buffer.Count;
-                if (ind_r == ind_n - 1)
-                {
-                    receiveStatus = SerialReceiveStatusEnum.ReceiveEnd;
-                    buf_len = buffer.Count;
-                    buffer.Clear();
-                }
+                buf_len = sp.BytesToRead;
+                sp.Read(receive_buf, 0, buf_len);
+                receiveStatus = SerialReceiveStatusEnum.ReceiveEnd;
             }
         }
 
@@ -249,7 +235,6 @@ namespace FesianXu.KinectGestureControl
         public void clearBuf()
         {
             Array.Clear(receive_buf, 0, buf_len);
-            
             buf_len = 0;
         }
 
