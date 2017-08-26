@@ -1,4 +1,14 @@
-﻿using System;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/26
+// Description: Kinect user priority manager
+// version: v1.1
+// type: class
+// Handle: 
+// void AuthorizationThreadHandle()
+//////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,7 +47,7 @@ namespace FesianXu.KinectGestureControl
             if (assistant.voiceRecog.RecognizedResultSemantic == assistant.SpeechGrammar.Chris &&
     assistant.voiceRecog.regStatus == SpeechRecognizeStatusEnum.Recognized)
             {
-                assistant.playWhatUp();
+                exec_ChrisGreet();
                 assistant.voiceRecog.regStatus = SpeechRecognizeStatusEnum.Rejected;
             } // call chris
             
@@ -78,6 +88,26 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// execute the chris' greeting
+        /// </summary>
+        private void exec_ChrisGreet()
+        {
+            if (currentPriority == UserPriorityEnum.NoAuthorization)
+            {
+                assistant.playWhatUp();
+            }
+            else if (currentPriority == UserPriorityEnum.Master || 
+                     currentPriority == UserPriorityEnum.Guest)
+            {
+                assistant.playYes();
+            }
+        }
+
+
+        /// <summary>
+        /// execute stop the kinect
+        /// </summary>
         private void exec_StopTheKinect()
         {
             if (currentPriority == UserPriorityEnum.Master)
@@ -85,9 +115,17 @@ namespace FesianXu.KinectGestureControl
                 assistant.playAsYouWant();
                 KinectRunningBeginWay = KinectRunBeginWayEnum.NoRunningNow;
             }
+            else if (currentPriority == UserPriorityEnum.Guest || 
+                     currentPriority == UserPriorityEnum.NoAuthorization)
+            {
+                assistant.playILimitedPriority();
+            }
         }
 
 
+        /// <summary>
+        /// execute run the kinect
+        /// </summary>
         private void exec_RunTheKinect()
         {
             if (currentPriority == UserPriorityEnum.Master)
@@ -95,9 +133,17 @@ namespace FesianXu.KinectGestureControl
                 assistant.playAsYouWant();
                 KinectRunningBeginWay = KinectRunBeginWayEnum.VA_Init;
             }
+            else if (currentPriority == UserPriorityEnum.Guest)
+            {
+                assistant.playILimitedPriority();
+                KinectRunningBeginWay = KinectRunBeginWayEnum.NoRunningNow;
+            }
         }
 
 
+        /// <summary>
+        /// execute log out
+        /// </summary>
         private void exec_LogOut()
         {
             assistant.playLogOut();
@@ -106,6 +152,9 @@ namespace FesianXu.KinectGestureControl
             currentPriority = UserPriorityEnum.NoAuthorization;
         }
 
+        /// <summary>
+        /// execute claim your identity
+        /// </summary>
         private void playIdentityClaim()
         {
             while (true)
@@ -123,14 +172,16 @@ namespace FesianXu.KinectGestureControl
         }
 
 
-
+        /// <summary>
+        /// execute authorizing
+        /// </summary>
         private void exec_Authorization()
         {
             assistant.playAuthorizing();
             haveCalledIdentity = false;
             if (isBeginAuthorizationThread == false && isAuthorized == false)
             {
-                Thread t_Authorization = new Thread(AuthorizationHandle);
+                Thread t_Authorization = new Thread(AuthorizationThreadHandle);
                 Thread t_call = new Thread(playIdentityClaim);
                 t_Authorization.IsBackground = true;
                 t_call.IsBackground = true;
@@ -143,7 +194,10 @@ namespace FesianXu.KinectGestureControl
         }
 
 
-        private void AuthorizationHandle()
+        /// <summary>
+        /// authorizing thread
+        /// </summary>
+        private void AuthorizationThreadHandle()
         {
             while (true)
             {

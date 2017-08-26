@@ -1,4 +1,12 @@
-﻿using System;
+﻿//////////////////////////////////////////////////////////////////////////
+// Author: FesianXu
+// Date: 2017/8/26
+// Description: speech grammar manager, for extract the tag word in grammar xml doc
+// version: v1.1
+// type: class
+//////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

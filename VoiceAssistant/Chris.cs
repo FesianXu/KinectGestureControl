@@ -116,6 +116,7 @@ namespace FesianXu.KinectGestureControl
 
         ////////////////////////////////////////////////////////////////////////
 
+
         /// <summary>
         /// say "welcome to kinect gesture control system!"
         /// </summary>
@@ -188,6 +189,9 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// play "master"
+        /// </summary>
         public void playMaster()
         {
             if (IsUsedVoiceAssistant)
@@ -198,6 +202,10 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
+
+        /// <summary>
+        /// play "guest"
+        /// </summary>
         public void playGuest()
         {
             if (IsUsedVoiceAssistant)
@@ -208,6 +216,10 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
+
+        /// <summary>
+        /// play "authorizing,please speak out your name"
+        /// </summary>
         public void playAuthorizing()
         {
             if (IsUsedVoiceAssistant)
@@ -218,6 +230,10 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
+
+        /// <summary>
+        /// play "welcome my master"
+        /// </summary>
         public void playIdentityMaster()
         {
             if (IsUsedVoiceAssistant)
@@ -228,6 +244,10 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
+
+        /// <summary>
+        /// play "your identity is guest"
+        /// </summary>
         public void playIdentityGuest()
         {
             if (IsUsedVoiceAssistant)
@@ -238,6 +258,10 @@ namespace FesianXu.KinectGestureControl
             }
         }
 
+
+        /// <summary>
+        /// play "logging out"
+        /// </summary>
         public void playLogOut()
         {
             if (IsUsedVoiceAssistant)
@@ -249,11 +273,28 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// play "as you want master"
+        /// </summary>
         public void playAsYouWant()
         {
             if (IsUsedVoiceAssistant)
             {
                 player.SoundLocation = voicesDict[nameof(response_AsYouWantMaster)];
+                player.Load();
+                player.Play();
+            }
+        }
+
+
+        /// <summary>
+        /// play "your authority is limited"
+        /// </summary>
+        public void playILimitedPriority()
+        {
+            if (IsUsedVoiceAssistant)
+            {
+                player.SoundLocation = voicesDict[nameof(response_Refuse)];
                 player.Load();
                 player.Play();
             }
