@@ -217,6 +217,7 @@ namespace FesianXu.KinectGestureControl
         private int current_location = 0;
         private byte[] tmpbytes = new byte[100];
         private int buf_len = 0;
+        private List<byte> buffer = new List<byte>(1000);
         private void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             if (receiveStatus != SerialReceiveStatusEnum.ReceiveStart)
@@ -226,42 +227,29 @@ namespace FesianXu.KinectGestureControl
             if (receiveStatus == SerialReceiveStatusEnum.ReceiveStart)
             {
                 int len = sp.BytesToRead;
-                sp.Read(tmpbytes, 0, len);
-                //int id_r = Array.IndexOf(tmpbytes, (byte)0x0d);
-                //int id_n = Array.IndexOf(tmpbytes, (byte)0x0a);
-                //if (id_r == id_n - 1)
-                //{
-                //    len = id_r;
-                //    receiveStatus = SerialReceiveStatusEnum.ReceiveEnd;
-                //}
-                Buffer.BlockCopy(tmpbytes, 0, receive_buf, current_location, len);
-                current_location = len + current_location;
-                Array.Clear(tmpbytes, 0, len);
-                // to check the buffer
-
-                findNewLine();
-                if (receiveStatus == SerialReceiveStatusEnum.ReceiveEnd)
+                byte[] buf = new byte[len];
+                sp.Read(buf, 0, len);
+                buffer.AddRange(buf);
+                buffer.CopyTo(0, receive_buf, 0, buffer.Count);
+                int ind_r = Array.IndexOf(receive_buf, (byte)0x0d);
+                int ind_n = Array.IndexOf(receive_buf, (byte)0x0a);
+                current_location = buffer.Count;
+                if (ind_r == ind_n - 1)
                 {
-                    buf_len = current_location;
-                    current_location = 0;
+                    receiveStatus = SerialReceiveStatusEnum.ReceiveEnd;
+                    buf_len = buffer.Count;
+                    buffer.Clear();
                 }
             }
         }
 
 
-        private void findNewLine()
-        {
-            int id_r = Array.IndexOf(receive_buf, (byte)0x0d);
-            int id_n = Array.IndexOf(receive_buf, (byte)0x0a);
-            if (id_r == id_n - 1)
-            {
-                receiveStatus = SerialReceiveStatusEnum.ReceiveEnd;
-            }
-        }
+   
 
         public void clearBuf()
         {
-            Array.Clear(receive_buf, 0, buf_len+2);
+            Array.Clear(receive_buf, 0, buf_len);
+            
             buf_len = 0;
         }
 
