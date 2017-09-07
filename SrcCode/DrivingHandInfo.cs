@@ -54,14 +54,15 @@ namespace FesianXu.KinectGestureControl
         private double angle;
         private double angle_rate;
 
-        // old data
-        private double old_angle;
-        private double old_radius;
-        private Point old_jleft2d;
-        private Point old_jright2d;
-        private Joint old_jleft3d;
-        private Joint old_jright3d;
-        private Point old_pos_center2d;
+        // old data, have to use the static variable or it will change as the new
+        // instance created
+        static private double old_angle = 0;
+        static private double old_radius;
+        static private Point old_jleft2d;
+        static private Point old_jright2d;
+        static private Joint old_jleft3d;
+        static private Joint old_jright3d;
+        static private Point old_pos_center2d;
 
         private bool isFirstToNormal = true;
 
@@ -122,7 +123,6 @@ namespace FesianXu.KinectGestureControl
 
             angle = computeAngle(jleft2d_color, jright2d_color, radius);
             angle_rate = (angle - old_angle);
-            old_angle = angle;
         }
 
 
@@ -196,7 +196,7 @@ namespace FesianXu.KinectGestureControl
             old_jright3d = jright3d;
             old_pos_center2d = pos_center2d_color;
             old_radius = radius;
-
+            old_angle = angle;
         }
 
         //visitors

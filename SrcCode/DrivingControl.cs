@@ -84,6 +84,10 @@ namespace FesianXu.KinectGestureControl
             ppm = new_ppm;
         }
 
+
+        /// <summary>
+        /// calculate the check bits
+        /// </summary>
         private void calculateCheckBits()
         {
             List<int> validlist = new List<int>();
@@ -134,6 +138,12 @@ namespace FesianXu.KinectGestureControl
         }
 
 
+        /// <summary>
+        /// control the yaw channel individually, but before use it make sure you have
+        /// send all channel values or it will be set to default.
+        /// </summary>
+        /// <param name="angle">the angle you turn, but not direct the yaw value
+        /// the channel value is up to the basic control stretagy</param>
         public void driveYaw(double angle)
         {
             initPPM();

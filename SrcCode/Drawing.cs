@@ -30,6 +30,7 @@ namespace FesianXu.KinectGestureControl
         /// <param name="skeleton">skeletons reference</param>
         void drawMatchStickMen(ref Skeleton skeleton);
 
+
         /// <summary>
         /// To draw the steering wheel in the mainImageBox with the left hand point and the right 
         /// hand point.

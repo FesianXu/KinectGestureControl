@@ -234,7 +234,7 @@ namespace FesianXu.KinectGestureControl
                                 else
                                     RightHandStatusBox.Text = "Right Hand is fist";
                                 counter_cnn = 0;
-                            }
+                            } //reduce the computation, introduce LSTM-CNN attention based model
                             counter_cnn++;
 
 
@@ -252,31 +252,34 @@ namespace FesianXu.KinectGestureControl
                         }
 
                         // driving steering wheel
-                        draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
+                        //draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
+                        
 
-                        //if (info.Radius < DrivingHandInfo.bothHandsRadius_threshold
-                        //    && info.WhichHandInFront == HandInFront.SamePlane)
-                        //{
-                        //    draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
-                        //}
-                        //else
-                        //{
-                        //    if (info.Left2CenterDistance > DrivingHandInfo.singleHandsAway_threshold
-                        //        || info.WhichHandInFront == HandInFront.RightHand)
-                        //    {
-                        //        draw.drawSingleHandInWheel(info.RightHandPoint, info.OldCenterPosition, HandsEnum.rightHand);
-                        //    }
-                        //    else if (info.Right2CenterDistance > DrivingHandInfo.singleHandsAway_threshold
-                        //        || info.WhichHandInFront == HandInFront.LeftHand)
-                        //    {
-                        //        draw.drawSingleHandInWheel(info.LeftHandPoint, info.OldCenterPosition, HandsEnum.leftHand);
-                        //    }
-                        //    else
-                        //    {
-                        //        draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
-                        //    }
-                        //}
+                        if (info.Radius < DrivingHandInfo.bothHandsRadius_threshold
+                            && info.WhichHandInFront == HandInFront.SamePlane)
+                        {
+                            info.updateOldData();
+                            draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
+                        }
+                        else
+                        {
+                            if (info.Left2CenterDistance > DrivingHandInfo.singleHandsAway_threshold
+                                || info.WhichHandInFront == HandInFront.RightHand)
+                            {
+                                draw.drawSingleHandInWheel(info.RightHandPoint, info.OldCenterPosition,         HandsEnum.rightHand);
+                            }
+                            else if (info.Right2CenterDistance > DrivingHandInfo.singleHandsAway_threshold
+                                || info.WhichHandInFront == HandInFront.LeftHand)
+                            {
+                                draw.drawSingleHandInWheel(info.LeftHandPoint, info.OldCenterPosition,          HandsEnum.leftHand);
+                            }
+                            else
+                            {
+                                draw.drawSteeringWheel(info.LeftHandPoint, info.RightHandPoint);
+                            }
+                        } // single hand driving
 
+                        
 
                         //communication with the slaver
                         if (comm.PortStatus == SerialPortStatusEnum.Opened)
