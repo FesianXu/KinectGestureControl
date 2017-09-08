@@ -1,11 +1,12 @@
-<div align=center>
 ![kinectLOGO]
-</div>
 
 # Introduce
 -----
-Kinect Gesture Control System(KGCS) Demo is used for the test and teaching, creating by FesianXu.
-Including a Voice Assistant Chris and Kinect Gesture Control and Serial port Communicator.
+Kinect Gesture Control System(KGCS) Demo is used for Kinect gesture control in embedded environment, including a WPF main program and a model based on TensorFlow(have not opened source now). If you have advise, please contact me with:
+**e-mail**: `FesianXu@163.com`
+**QQ**: `973926198`
+
+
 
 ****
 # Version Review
@@ -26,12 +27,13 @@ Date: `2017/8/17`
 
 **Bugs**:
 * Left hand in hold single hand driving mode is invalid and in bug.
-
+* have a problem in serial communication receive.
+* have to manully initiate the RC by sending each channels values.
 
 **ToDO list**:
 * add a more efficient hand gesture recognition model than the single spatial CNN model, which is both time-consuming and in high-error rate. May be some model like LSTM-CNN attention based model is ideal.
 * rewrite the main thread code structure, it is mess now.
-* add more function to **Chris**
+* add more functions to **Chris**
 
 ![version1.0main]
 -----
